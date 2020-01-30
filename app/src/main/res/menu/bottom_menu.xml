@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by m.coder on 2020/1/30.
+  ~ Copyright (c) 2020. nanaten All rights reserved.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/to_station"
+        android:icon="@drawable/ic_train"
+        android:title="@string/to_station" />
+
+    <item
+        android:id="@+id/to_college"
+        android:icon="@drawable/ic_school"
+        android:title="@string/to_college" />
+</menu>

@@ -5,7 +5,7 @@
 
 package com.nanaten.bustime.di.ui
 
-import com.nanaten.bustime.ui.ToCollegeFragment
+import com.nanaten.bustime.ui.ToStationFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -15,6 +15,6 @@ internal abstract class ToStationFragmentModule {
 
 
     @ContributesAndroidInjector
-    abstract fun provideFragment(): ToStationFragmentModule
+    abstract fun provideFragment(): ToStationFragment
 
 }

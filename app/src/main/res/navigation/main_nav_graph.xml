@@ -15,4 +15,18 @@
         tools:layout="@layout/fragment_scaffold">
 
     </fragment>
+    <fragment
+        android:id="@+id/toStationFragment"
+        android:name="com.nanaten.bustime.ui.ToStationFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_to_station">
+
+    </fragment>
+    <fragment
+        android:id="@+id/toCollegeFragment"
+        android:name="com.nanaten.bustime.ui.ToCollegeFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_to_college">
+
+    </fragment>
 </navigation>
