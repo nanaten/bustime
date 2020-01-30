@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by m.coder on 2020/1/30.
+  ~ Copyright (c) 2020. nanaten All rights reserved.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/scaffoldFragment">
+    <fragment
+        android:id="@+id/scaffoldFragment"
+        android:name="com.nanaten.bustime.ui.ScaffoldFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_scaffold">
+
+    </fragment>
+</navigation>
