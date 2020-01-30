@@ -17,8 +17,8 @@ abstract class MainActivityBuilder {
         modules = [
             ScaffoldFragmentModule::class,
             ToCollegeFragmentModule::class,
-            ToStationFragmentModule::class
-
+            ToStationFragmentModule::class,
+            SettingsFragmentModule::class
         ]
     )
     abstract fun bindMainActivity(): MainActivity
