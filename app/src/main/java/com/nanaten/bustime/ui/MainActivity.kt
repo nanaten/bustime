@@ -1,10 +1,10 @@
 package com.nanaten.bustime.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.nanaten.bustime.R
+import dagger.android.support.DaggerAppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
