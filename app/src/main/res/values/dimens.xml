@@ -4,5 +4,13 @@
   -->
 
 <resources>
+    <dimen name="narrow_margin">8dp</dimen>
     <dimen name="default_margin">16dp</dimen>
+    <dimen name="middle_margin">24dp</dimen>
+    <dimen name="wide_margin">32dp</dimen>
+    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_mid">20sp</dimen>
+    <dimen name="text_size_big">24sp</dimen>
+    <dimen name="button_round_rect_size">20dp</dimen>
+    <dimen name="icon_size">32dp</dimen>
 </resources>

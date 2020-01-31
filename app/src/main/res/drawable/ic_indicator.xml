@@ -1,0 +1,26 @@
+<!--
+  ~ Created by m.coder on 2020/1/31.
+  ~ Copyright (c) 2020. nanaten All rights reserved.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="12dp"
+    android:viewportWidth="72"
+    android:viewportHeight="12">
+    <path
+        android:pathData="M6,6m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"
+        android:fillColor="#B2BEC3" />
+    <path
+        android:pathData="M66,6m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"
+        android:fillColor="#0984E3" />
+    <path
+        android:pathData="M22,6m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:fillColor="#B2BEC3" />
+    <path
+        android:pathData="M36,6m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:fillColor="#B2BEC3" />
+    <path
+        android:pathData="M50,6m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:fillColor="#B2BEC3" />
+</vector>
