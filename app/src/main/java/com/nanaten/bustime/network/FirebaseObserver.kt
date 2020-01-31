@@ -6,8 +6,8 @@
 package com.nanaten.bustime.network
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.nanaten.bustime.entity.CalendarEntity
-import com.nanaten.bustime.entity.Diagram
+import com.nanaten.bustime.network.entity.CalendarEntity
+import com.nanaten.bustime.network.entity.Diagram
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow

@@ -6,6 +6,7 @@
 package com.nanaten.bustime.di.app
 
 import com.nanaten.bustime.App
+import com.nanaten.bustime.di.network.DiagramModule
 import com.nanaten.bustime.di.ui.MainActivityBuilder
 import dagger.BindsInstance
 import dagger.Component
@@ -18,7 +19,8 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
-        MainActivityBuilder::class
+        MainActivityBuilder::class,
+        DiagramModule::class
     ]
 )
 

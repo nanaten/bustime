@@ -5,14 +5,23 @@
 
 package com.nanaten.bustime.di.ui
 
+import androidx.lifecycle.ViewModel
+import com.nanaten.bustime.di.viewmodel.ViewModelKey
 import com.nanaten.bustime.ui.ToStationFragment
+import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
+import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import dagger.multibindings.IntoMap
 
 @Module
 @Suppress("UNUSED")
 internal abstract class ToStationFragmentModule {
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(DiagramViewModel::class)
+    abstract fun bindViewModel(viewModel: DiagramViewModel): ViewModel
 
     @ContributesAndroidInjector
     abstract fun provideFragment(): ToStationFragment

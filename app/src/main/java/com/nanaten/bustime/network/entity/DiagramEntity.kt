@@ -3,7 +3,7 @@
  * Copyright (c) 2020. nanaten All rights reserved.
  */
 
-package com.nanaten.bustime.entity
+package com.nanaten.bustime.network.entity
 
 class DiagramEntity(
     var hour: Int = 0,
