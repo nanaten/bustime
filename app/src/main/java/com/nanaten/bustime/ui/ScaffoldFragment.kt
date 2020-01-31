@@ -1,11 +1,13 @@
 package com.nanaten.bustime.ui
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
@@ -32,6 +34,24 @@ class ScaffoldFragment : DaggerFragment() {
                     ?: return@setOnNavigationItemSelectedListener false
             return@setOnNavigationItemSelectedListener true
         }
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+
+            @SuppressLint("MissingSuperCall")
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                
+            }
+
+            override fun onPageSelected(position: Int) {
+                binding.bottomNavigation.menu.getItem(position).isChecked = true
+            }
+        })
         return binding.root
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentToStationBinding
 import com.nanaten.bustime.util.autoCleared
@@ -27,6 +28,7 @@ class ToStationFragment : DaggerFragment() {
             backVisibility = View.GONE,
             settingVisibility = View.VISIBLE
         )
+        binding.toStationRv.layoutManager = LinearLayoutManager(context)
         return binding.root
     }
 
