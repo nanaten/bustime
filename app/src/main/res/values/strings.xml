@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="to_station">浄水駅行き</string>
     <string name="to_college">大学行き</string>
+    <string name="to_station_label">浄水駅行き</string>
+    <string name="to_collage_label">大学行き</string>
 </resources>
