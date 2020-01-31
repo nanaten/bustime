@@ -10,12 +10,13 @@ import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
+import com.nanaten.bustime.util.autoCleared
 import dagger.android.support.DaggerFragment
 
 
 class ScaffoldFragment : DaggerFragment() {
 
-    lateinit var binding: FragmentScaffoldBinding
+    private var binding: FragmentScaffoldBinding by autoCleared()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +28,7 @@ class ScaffoldFragment : DaggerFragment() {
         binding.viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
             binding.viewPager.currentItem =
-                HomeTabs.values().firstOrNull() { it.resId == menu.itemId }?.value
+                HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
                     ?: return@setOnNavigationItemSelectedListener false
             return@setOnNavigationItemSelectedListener true
         }
