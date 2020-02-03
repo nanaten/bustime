@@ -29,14 +29,13 @@ class FirebaseObserver {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         @UseExperimental(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
         return channelFlow {
-            val listenerRegistration = firestore.collection(calendar).whereEqualTo(date, today)
+            val listenerRegistration = firestore.collection(calendar).document(today)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         channel.close(firebaseFirestoreException)
                     } else {
-                        val calendar =
-                            querySnapshot?.documents?.map { it.toObject(CalendarEntity::class.java) }
-                        channel.offer(calendar?.firstOrNull() ?: CalendarEntity())
+                        val calendar = querySnapshot?.toObject(CalendarEntity::class.java)
+                        channel.offer(calendar ?: CalendarEntity())
                     }
                 }
             awaitClose {

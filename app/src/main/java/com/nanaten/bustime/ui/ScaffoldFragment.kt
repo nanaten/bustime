@@ -6,19 +6,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
+import com.nanaten.bustime.di.viewmodel.ViewModelFactory
+import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
 import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 
 class ScaffoldFragment : DaggerFragment() {
 
     private var binding: FragmentScaffoldBinding by autoCleared()
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,31 +35,38 @@ class ScaffoldFragment : DaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { menu ->
-            binding.viewPager.currentItem =
-                HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
-                    ?: return@setOnNavigationItemSelectedListener false
-            return@setOnNavigationItemSelectedListener true
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            this.viewModel = mViewModel
+            viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
+            bottomNavigation.setOnNavigationItemSelectedListener { menu ->
+                viewPager.currentItem =
+                    HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
+                        ?: return@setOnNavigationItemSelectedListener false
+                return@setOnNavigationItemSelectedListener true
+            }
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+
+                @SuppressLint("MissingSuperCall")
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+
+                }
+
+                override fun onPageSelected(position: Int) {
+                    bottomNavigation.menu.getItem(position).isChecked = true
+                }
+            })
         }
-        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
 
-
-            @SuppressLint("MissingSuperCall")
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                
-            }
-
-            override fun onPageSelected(position: Int) {
-                binding.bottomNavigation.menu.getItem(position).isChecked = true
-            }
+        mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, "${it.diagramName}", Toast.LENGTH_SHORT).show()
         })
         return binding.root
     }
