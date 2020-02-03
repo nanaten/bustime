@@ -64,7 +64,9 @@ class DiagramAdapter : BaseRecyclerViewAdapter() {
 
     fun updateDiagram(list: List<Diagram>) {
         this.list = list
-        notifyDataSetChanged()
+        list.forEachIndexed { i, _ ->
+            notifyItemChanged(i + 2)
+        }
     }
 
     fun updateCalendar(item: Calendar) {
