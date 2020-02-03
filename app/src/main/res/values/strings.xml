@@ -16,4 +16,6 @@
     <string name="calendar">カレンダー</string>
     <string name="recent_bus">次に来るバス一覧</string>
     <string name="time_is_indication">※到着時刻は目安です</string>
+    <string name="from_college">大学発</string>
+    <string name="to_startion">浄水駅着</string>
 </resources>
