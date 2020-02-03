@@ -10,6 +10,10 @@
         <variable
             name="calendar"
             type="com.nanaten.bustime.network.entity.Calendar" />
+
+        <variable
+            name="viewModel"
+            type="com.nanaten.bustime.ui.viewmodel.DiagramViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -99,7 +103,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:gravity="center"
-                android:text="00:00"
+                android:text="@{viewModel.next.toString()}"
                 android:textSize="48sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

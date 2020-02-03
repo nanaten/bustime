@@ -15,8 +15,9 @@ import com.nanaten.bustime.databinding.ListItemPdfBinding
 import com.nanaten.bustime.databinding.ListItemRecentBusBinding
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
+import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 
-class DiagramAdapter : BaseRecyclerViewAdapter() {
+class DiagramAdapter(private val viewModel: DiagramViewModel) : BaseRecyclerViewAdapter() {
     private var list: List<Diagram> = listOf()
     private var calendar: Calendar? = null
 
@@ -44,6 +45,7 @@ class DiagramAdapter : BaseRecyclerViewAdapter() {
         when (holder) {
             is DiagramItemViewHolder -> {
                 holder.bind(calendar)
+                holder.setViewModel(viewModel)
             }
             is PdfItemViewHolder -> {
                 holder.binding.calendarLayout.setOnClickListener {
@@ -74,6 +76,10 @@ class DiagramAdapter : BaseRecyclerViewAdapter() {
         notifyItemChanged(0)
     }
 
+    fun updateTime() {
+        notifyItemChanged(0)
+    }
+
     class DiagramItemViewHolder(
         parent: ViewGroup, private val binding: ListItemDiagramBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
@@ -85,6 +91,10 @@ class DiagramAdapter : BaseRecyclerViewAdapter() {
         fun bind(item: Calendar?) {
             item ?: return
             binding.calendar = item
+        }
+
+        fun setViewModel(viewModel: DiagramViewModel) {
+            binding.viewModel = viewModel
         }
     }
 

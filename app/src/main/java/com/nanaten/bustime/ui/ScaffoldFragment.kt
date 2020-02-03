@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
@@ -65,9 +63,6 @@ class ScaffoldFragment : DaggerFragment() {
             })
         }
 
-        mViewModel.calendar.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context, "${it.diagramName}", Toast.LENGTH_SHORT).show()
-        })
         return binding.root
     }
 }
