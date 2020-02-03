@@ -15,9 +15,13 @@ import javax.inject.Inject
 
 class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) : ViewModel() {
     val calendar: LiveData<Calendar> = liveData {
-        val cal = useCase.getTodayCalendar()
-        cal.collect {
-            emit(it)
+        try {
+            val cal = useCase.getTodayCalendar()
+            cal.collect {
+                emit(it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
