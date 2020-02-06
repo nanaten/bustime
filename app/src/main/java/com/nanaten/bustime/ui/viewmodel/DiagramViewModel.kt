@@ -5,6 +5,7 @@
 
 package com.nanaten.bustime.ui.viewmodel
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.*
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.usecase.DiagramUseCase
@@ -30,11 +31,14 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val next: LiveData<Long> = combine(0L, todayZerotime, nowSecond) { _, zeroTime, sec ->
         sec - zeroTime
     }
+    val appIsActive = ObservableField<Boolean>(false)
 
     fun startTimer() {
         getZeroTime()
+        if (appIsActive.get() == true) return
+        appIsActive.set(true)
         viewModelScope.launch {
-            while (true) {
+            while (appIsActive.get() == true) {
                 val cal = java.util.Calendar.getInstance()
                 val now = (cal.timeInMillis / 1000)
                 nowSecond.postValue(now)
@@ -43,12 +47,18 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
+    fun stopTimer() {
+        if (appIsActive.get() != true) return
+        appIsActive.set(false)
+    }
+
     fun getZeroTime() {
         val cal = java.util.Calendar.getInstance()
         cal.set(
             cal.get(java.util.Calendar.YEAR),
             cal.get(java.util.Calendar.MONTH),
             cal.get(java.util.Calendar.DATE),
+            0,
             0,
             0
         )

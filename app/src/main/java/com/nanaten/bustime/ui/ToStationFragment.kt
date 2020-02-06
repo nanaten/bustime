@@ -50,7 +50,7 @@ class ToStationFragment : DaggerFragment() {
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
         })
-        mViewModel.startTimer()
+
 
         mViewModel.next.observe(viewLifecycleOwner, Observer {
             mAdapter.updateTime()
@@ -58,4 +58,13 @@ class ToStationFragment : DaggerFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        mViewModel.startTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.stopTimer()
+    }
 }
