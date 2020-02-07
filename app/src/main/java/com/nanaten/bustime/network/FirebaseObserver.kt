@@ -22,7 +22,6 @@ class FirebaseObserver {
 
     companion object {
         const val calendar = "calendar"
-        const val date = "date"
         const val second = "second"
     }
 
