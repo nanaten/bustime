@@ -27,6 +27,8 @@ class ToCollegeFragment : DaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
     private var binding: FragmentToCollegeBinding by autoCleared()
+    // タブのポジション設定
+    // 本当は動的に取りたい
     private val tabPosition = 1
 
     override fun onCreateView(
@@ -37,7 +39,7 @@ class ToCollegeFragment : DaggerFragment() {
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         binding.apply {
-            binding.toolbar.setToolbar(
+            toolbar.setToolbar(
                 getString(R.string.to_collage_label),
                 backVisibility = View.GONE,
                 settingVisibility = View.VISIBLE

@@ -27,6 +27,8 @@ class ToStationFragment : DaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
     private var binding: FragmentToStationBinding by autoCleared()
+    // タブのポジション設定
+    // 本当は動的に取りたい
     private val tabPosition = 0
 
     override fun onCreateView(

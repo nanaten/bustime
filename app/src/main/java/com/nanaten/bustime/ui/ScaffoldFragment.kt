@@ -1,7 +1,6 @@
 package com.nanaten.bustime.ui
 
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,7 @@ import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 
-class ScaffoldFragment : DaggerFragment() {
+class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
 
     private var binding: FragmentScaffoldBinding by autoCleared()
     @Inject
@@ -35,7 +34,7 @@ class ScaffoldFragment : DaggerFragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            this.viewModel = mViewModel
+            viewModel = mViewModel
             viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
             bottomNavigation.setOnNavigationItemSelectedListener { menu ->
                 viewPager.currentItem =
@@ -43,26 +42,20 @@ class ScaffoldFragment : DaggerFragment() {
                         ?: return@setOnNavigationItemSelectedListener false
                 return@setOnNavigationItemSelectedListener true
             }
-            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-
-
-                @SuppressLint("MissingSuperCall")
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-
-                }
-
-                override fun onPageSelected(position: Int) {
-                    bottomNavigation.menu.getItem(position).isChecked = true
-                }
-            })
         }
-
+        binding.viewPager.addOnPageChangeListener(this)
         return binding.root
+    }
+
+    // UNUSED
+    override fun onPageScrollStateChanged(state: Int) {
+    }
+
+    // UNUSED
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+    }
+
+    override fun onPageSelected(position: Int) {
+        binding.bottomNavigation.menu.getItem(position).isChecked = true
     }
 }
