@@ -12,10 +12,11 @@
     <string name="more_time">出発まであと</string>
     <string name="start_college">大学発</string>
     <string name="arrival_station">浄水駅着</string>
+    <string name="start_station">浄水駅発</string>
+    <string name="arrival_college">大学着</string>
     <string name="time_table">時刻表</string>
     <string name="calendar">カレンダー</string>
     <string name="recent_bus">次に来るバス一覧</string>
     <string name="time_is_indication">※到着時刻は目安です</string>
-    <string name="from_college">大学発</string>
-    <string name="to_startion">浄水駅着</string>
+
 </resources>

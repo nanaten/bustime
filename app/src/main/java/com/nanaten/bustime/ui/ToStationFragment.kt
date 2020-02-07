@@ -54,6 +54,9 @@ class ToStationFragment : DaggerFragment() {
             mViewModel.getDiagrams(target)
         })
 
+        mViewModel.diagrams.observe(viewLifecycleOwner, Observer {
+            mAdapter.updateDiagram(it.filter { it.second >= mViewModel.nowSecond.value ?: 0L })
+        })
 
         mViewModel.next.observe(viewLifecycleOwner, Observer {
             mAdapter.updateTime()

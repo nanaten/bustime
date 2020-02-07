@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
+import com.nanaten.bustime.network.entity.DiagramEntity
 import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.util.combine
 import kotlinx.coroutines.delay
@@ -26,6 +27,8 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val diagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
     val oldDate = MutableLiveData<String>()
+    val startTime = MutableLiveData<String>("")
+    val arrivalTime = MutableLiveData<String>("")
 
     /**
      * 次のバスまでの時間を3つのLiveDataから割り出す
@@ -34,7 +37,17 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
      */
     val next: LiveData<Long> =
         combine(0L, nowSecond, diagrams) { _, sec, diagrams ->
-            val nearSecond = diagrams.firstOrNull { it.second >= sec }?.second ?: 0
+            val nearDiagram = diagrams.firstOrNull { it.second >= sec } ?: Diagram(DiagramEntity())
+            startTime.postValue(String.format("%02d:%02d", nearDiagram.hour, nearDiagram.minute))
+            arrivalTime.postValue(
+                String.format(
+                    "%02d:%02d",
+                    nearDiagram.arrivalHour,
+                    nearDiagram.arrivalMinute
+                )
+            )
+
+            val nearSecond = nearDiagram.second
             if (nearSecond != 0) nearSecond - sec else 0
         }
     val appIsActive = ObservableField<Boolean>(false)

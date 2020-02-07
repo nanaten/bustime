@@ -24,7 +24,7 @@
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            android:text="1"
+            android:text=""
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_big"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
                 android:id="@+id/start_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/from_college"
+                android:text="@string/start_college"
                 android:textSize="@dimen/text_size_small" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{item.hour + `:` + item.minute}"
+                android:text="@{String.format(`%02d:%02d`, item.hour, item.minute)}"
                 android:textSize="@dimen/text_size_mid"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -88,7 +88,7 @@
                 android:id="@+id/arrival_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/to_startion"
+                android:text="@string/arrival_station"
                 android:textSize="@dimen/text_size_small" />
 
             <TextView
@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{item.hour + `:` + item.minute}"
+                android:text="@{String.format(`%02d:%02d`, item.arrivalHour, item.arrivalMinute)}"
                 android:textSize="@dimen/text_size_mid"
                 android:textStyle="bold" />
         </LinearLayout>

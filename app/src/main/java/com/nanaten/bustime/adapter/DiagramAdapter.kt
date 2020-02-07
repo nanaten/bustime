@@ -60,7 +60,9 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
                 }
             }
             is RecentItemViewHolder -> {
-                holder.bind(list[position])
+                val index = holder.adapterPosition - 2
+                holder.bind(list[index])
+                holder.binding.order.text = "${index + 1}"
             }
             else -> return
         }
@@ -103,13 +105,13 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
             if (pos == 0) {
                 binding.startPlace.setImageResource(R.drawable.ic_school)
                 binding.arrivalPlace.setImageResource(R.drawable.ic_train)
-                binding.startLabel.text = "大学発"
-                binding.arrivalLabel.text = "浄水駅着"
+                binding.startLabel.text = binding.root.context.getString(R.string.start_college)
+                binding.arrivalLabel.text = binding.root.context.getString(R.string.arrival_station)
             } else {
                 binding.startPlace.setImageResource(R.drawable.ic_train)
                 binding.arrivalPlace.setImageResource(R.drawable.ic_school)
-                binding.startLabel.text = "浄水駅発"
-                binding.arrivalLabel.text = "大学着"
+                binding.startLabel.text = binding.root.context.getString(R.string.start_station)
+                binding.arrivalLabel.text = binding.root.context.getString(R.string.arrival_college)
             }
         }
     }
@@ -125,7 +127,7 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
     }
 
     class RecentItemViewHolder(
-        parent: ViewGroup, private val binding: ListItemRecentBusBinding = DataBindingUtil.inflate(
+        parent: ViewGroup, val binding: ListItemRecentBusBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             R.layout.list_item_recent_bus,
             parent,
