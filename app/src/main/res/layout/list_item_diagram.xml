@@ -103,7 +103,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:gravity="center"
-                android:text="@{viewModel.next.toString()}"
+                android:text="@{String.format(`%02d:%02d`, viewModel.next / 60 % 60, viewModel.next % 60)}"
                 android:textSize="48sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -17,7 +17,8 @@ import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 
-class DiagramAdapter(private val viewModel: DiagramViewModel) : BaseRecyclerViewAdapter() {
+class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPosition: Int) :
+    BaseRecyclerViewAdapter() {
     private var list: List<Diagram> = listOf()
     private var calendar: Calendar? = null
 
@@ -46,6 +47,7 @@ class DiagramAdapter(private val viewModel: DiagramViewModel) : BaseRecyclerView
             is DiagramItemViewHolder -> {
                 holder.bind(calendar)
                 holder.setViewModel(viewModel)
+                holder.setIcon(tabPosition)
             }
             is PdfItemViewHolder -> {
                 holder.binding.calendarLayout.setOnClickListener {
@@ -95,6 +97,20 @@ class DiagramAdapter(private val viewModel: DiagramViewModel) : BaseRecyclerView
 
         fun setViewModel(viewModel: DiagramViewModel) {
             binding.viewModel = viewModel
+        }
+
+        fun setIcon(pos: Int) {
+            if (pos == 0) {
+                binding.startPlace.setImageResource(R.drawable.ic_school)
+                binding.arrivalPlace.setImageResource(R.drawable.ic_train)
+                binding.startLabel.text = "大学発"
+                binding.arrivalLabel.text = "浄水駅着"
+            } else {
+                binding.startPlace.setImageResource(R.drawable.ic_train)
+                binding.arrivalPlace.setImageResource(R.drawable.ic_school)
+                binding.startLabel.text = "浄水駅発"
+                binding.arrivalLabel.text = "大学着"
+            }
         }
     }
 

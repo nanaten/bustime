@@ -27,13 +27,14 @@ class ToStationFragment : DaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
     private var binding: FragmentToStationBinding by autoCleared()
+    private val tabPosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
-        val mAdapter = DiagramAdapter(mViewModel)
+        val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         binding.apply {
             toolbar.setToolbar(
                 getString(R.string.to_station_label),
@@ -49,6 +50,7 @@ class ToStationFragment : DaggerFragment() {
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
+            getDiagrams()
         })
 
 
@@ -61,6 +63,12 @@ class ToStationFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
         mViewModel.startTimer()
+        getDiagrams()
+    }
+
+    private fun getDiagrams() {
+        val target = if (tabPosition == 0) "ToCollege" else "ToCollege"
+        mViewModel.getDiagrams(target)
     }
 
     override fun onPause() {

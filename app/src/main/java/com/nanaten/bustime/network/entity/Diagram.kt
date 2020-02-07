@@ -8,29 +8,25 @@ package com.nanaten.bustime.network.entity
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-
-@Parcelize
-class DiagramList(
-    val list: List<Diagram>?
-) : Parcelable {
-    constructor(entity: DiagramListEntity) : this(
-        entity.list?.map { Diagram(it) }
-    )
-}
-
 @Parcelize
 class Diagram(
     val hour: Int,
     val minute: Int,
     val second: Int,
     val isLast: Boolean,
-    val isReturn: Boolean
+    val isReturn: Boolean,
+    val arrivalHour: Int,
+    val arrivalMinute: Int,
+    val arrivalSecond: Int
 ) : Parcelable {
     constructor(entity: DiagramEntity) : this(
         entity.hour,
         entity.minute,
         entity.second,
         entity.isLast,
-        entity.isReturn
+        entity.isReturn,
+        entity.arrivalHour,
+        entity.arrivalMinute,
+        entity.arrivalSecond
     )
 }
