@@ -50,7 +50,8 @@ class ToStationFragment : DaggerFragment() {
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
-            getDiagrams()
+            val target = if (tabPosition == 0) "ToCollege" else "ToCollege"
+            mViewModel.getDiagrams(target)
         })
 
 
@@ -63,12 +64,7 @@ class ToStationFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
         mViewModel.startTimer()
-        getDiagrams()
-    }
-
-    private fun getDiagrams() {
-        val target = if (tabPosition == 0) "ToCollege" else "ToCollege"
-        mViewModel.getDiagrams(target)
+        mViewModel.getCalendar()
     }
 
     override fun onPause() {
