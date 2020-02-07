@@ -36,7 +36,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
      */
     val next: LiveData<Long> =
         combine(0L, todayZerotime, nowSecond, diagrams) { _, zeroTime, sec, diagrams ->
-            val nearSecond = diagrams.firstOrNull { sec > it.second }?.second ?: 0
+            val nearSecond = diagrams.firstOrNull { it.second >= (sec - zeroTime) }?.second ?: 0
             if (nearSecond != 0) nearSecond - (sec - zeroTime) else 0
         }
     val appIsActive = ObservableField<Boolean>(false)
@@ -59,6 +59,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     fun getDiagrams(target: String) {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         if (oldDate.value == today) {
+            diagrams.postValue(diagrams.value)
             return
         }
         viewModelScope.launch {
