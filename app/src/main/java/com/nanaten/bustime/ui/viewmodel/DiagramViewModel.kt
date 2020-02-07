@@ -26,7 +26,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
-    val oldDate = MutableLiveData<String>()
+    private val oldDate = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
 

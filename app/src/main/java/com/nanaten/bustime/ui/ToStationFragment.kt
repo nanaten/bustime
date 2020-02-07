@@ -50,7 +50,7 @@ class ToStationFragment : DaggerFragment() {
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
-            val target = if (tabPosition == 0) "ToCollege" else "ToCollege"
+            val target = if (tabPosition == 0) "ToStation" else "ToCollege"
             mViewModel.getDiagrams(target)
         })
 
