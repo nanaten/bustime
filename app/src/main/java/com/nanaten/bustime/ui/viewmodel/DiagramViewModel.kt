@@ -24,20 +24,18 @@ import javax.inject.Inject
 class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) : ViewModel() {
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
-    val todayZerotime = MutableLiveData<Long>(0L)
     val nowSecond = MutableLiveData<Long>(0L)
     val oldDate = MutableLiveData<String>()
 
     /**
-     * 次のバスまでの時間を割り出す
-     * todayZerotime: 本日の00時00分00秒時点のUnixTime
-     * nowSecond: 現在の時間
+     * 次のバスまでの時間を3つのLiveDataから割り出す
+     * nowSecond: 現在の時間(sec)
      * diagrams: 本日の時刻表
      */
     val next: LiveData<Long> =
-        combine(0L, todayZerotime, nowSecond, diagrams) { _, zeroTime, sec, diagrams ->
-            val nearSecond = diagrams.firstOrNull { it.second >= (sec - zeroTime) }?.second ?: 0
-            if (nearSecond != 0) nearSecond - (sec - zeroTime) else 0
+        combine(0L, nowSecond, diagrams) { _, sec, diagrams ->
+            val nearSecond = diagrams.firstOrNull { it.second >= sec }?.second ?: 0
+            if (nearSecond != 0) nearSecond - sec else 0
         }
     val appIsActive = ObservableField<Boolean>(false)
 
@@ -66,7 +64,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             try {
                 val diagram = calendar.value?.diagram ?: return@launch
                 val diagramName = "$diagram$target"
-                val now = nowSecond.value?.minus(todayZerotime.value ?: 0L) ?: 0L
+                val now = nowSecond.value ?: 0L
                 val list = useCase.getDiagrams(diagramName, now)
                 list.collect {
                     diagrams.postValue(it)
@@ -79,13 +77,16 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun startTimer() {
-        getZeroTime()
         if (appIsActive.get() == true) return
         appIsActive.set(true)
         viewModelScope.launch {
             while (appIsActive.get() == true) {
                 val cal = java.util.Calendar.getInstance()
-                val now = (cal.timeInMillis / 1000)
+                val now = (
+                        cal.get(java.util.Calendar.HOUR_OF_DAY) * 3600
+                                + cal.get(java.util.Calendar.MINUTE) * 60
+                                + cal.get(java.util.Calendar.SECOND)
+                        ).toLong()
                 nowSecond.postValue(now)
                 delay(1000)
             }
@@ -97,17 +98,4 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         appIsActive.set(false)
     }
 
-    fun getZeroTime() {
-        val cal = java.util.Calendar.getInstance()
-        cal.set(
-            cal.get(java.util.Calendar.YEAR),
-            cal.get(java.util.Calendar.MONTH),
-            cal.get(java.util.Calendar.DATE),
-            0,
-            0,
-            0
-        )
-        val sec = (cal.timeInMillis / 1000)
-        todayZerotime.postValue(sec)
-    }
 }
