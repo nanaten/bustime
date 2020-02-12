@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.DiagramEntity
+import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.util.combine
 import kotlinx.coroutines.delay
@@ -30,6 +31,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
+    val pdfUrl = MutableLiveData<RemotePdf>()
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -115,4 +117,16 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         appIsActive.set(false)
     }
 
+    fun getPdf() {
+        pdfUrl.value ?: try {
+            viewModelScope.launch {
+                useCase.getPdfUrl()
+                    .collect {
+                        pdfUrl.postValue(it)
+                    }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

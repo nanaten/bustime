@@ -6,6 +6,8 @@
 package com.nanaten.bustime.network
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.nanaten.bustime.network.entity.CalendarEntity
 import com.nanaten.bustime.network.entity.DiagramEntity
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +25,7 @@ class FirebaseObserver {
     companion object {
         const val calendar = "calendar"
         const val second = "second"
+        const val pdfUrl = "pdf_url"
     }
 
     suspend fun getTodayCalendar(): Flow<CalendarEntity> {
@@ -51,6 +54,29 @@ class FirebaseObserver {
                         val diagrams =
                             querySnapShot.documents.mapNotNull { it.toObject(DiagramEntity::class.java) }
                         cont.resume(diagrams)
+                    }
+                    .addOnFailureListener {
+                        cont.resumeWithException(it)
+                    }
+            })
+        }
+
+    }
+
+    suspend fun getPdfUrl(): Flow<String> {
+        return flow {
+            emit(suspendCoroutine { cont ->
+                val remoteConfig = FirebaseRemoteConfig.getInstance()
+                val configSettings = FirebaseRemoteConfigSettings.Builder()
+                    .setMinimumFetchIntervalInSeconds(3600L)
+                    .build()
+                remoteConfig.setConfigSettingsAsync(configSettings)
+                // remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+                remoteConfig.fetchAndActivate()
+                    .addOnSuccessListener {
+                        val strPdf = remoteConfig.getString(pdfUrl)
+
+                        cont.resume(strPdf)
                     }
                     .addOnFailureListener {
                         cont.resumeWithException(it)

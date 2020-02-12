@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by m.coder on 2020/2/12.
+  ~ Copyright (c) 2020. nanaten All rights reserved.
+  -->
+
+<defaultsMap>
+    <entry>
+        <key>pdf_url</key>
+        <value>
+            {"calendar":"https://www.chukyo-u.ac.jp/support/studentlife/a7.html","time_table":"https://www.chukyo-u.ac.jp/support/studentlife/a7.html"}
+        </value>
+    </entry>
+</defaultsMap>

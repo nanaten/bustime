@@ -8,12 +8,18 @@ package com.nanaten.bustime.network.repository
 import com.nanaten.bustime.network.FirebaseObserver
 import com.nanaten.bustime.network.entity.CalendarEntity
 import com.nanaten.bustime.network.entity.DiagramEntity
+import com.nanaten.bustime.network.entity.RemotePdfEntity
+import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface DiagramRepository {
     suspend fun getTodayCalendar(): Flow<CalendarEntity>
     suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>>
+    suspend fun getPdfUrl(): Flow<RemotePdfEntity>
 }
 
 class DiagramRepositoryImpl @Inject constructor(private val firebaseObserver: FirebaseObserver) :
@@ -24,5 +30,17 @@ class DiagramRepositoryImpl @Inject constructor(private val firebaseObserver: Fi
 
     override suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>> {
         return firebaseObserver.getDiagrams(diagramName, now)
+    }
+
+    override suspend fun getPdfUrl(): Flow<RemotePdfEntity> {
+        return firebaseObserver.getPdfUrl()
+            .map {
+                withContext(Dispatchers.IO) {
+                    val adapter = Moshi.Builder().build().adapter(
+                        RemotePdfEntity::class.java
+                    )
+                    adapter.fromJson(it) ?: RemotePdfEntity()
+                }
+            }
     }
 }

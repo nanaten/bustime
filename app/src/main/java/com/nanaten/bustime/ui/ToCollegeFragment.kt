@@ -1,10 +1,12 @@
 package com.nanaten.bustime.ui
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
+import com.nanaten.bustime.adapter.ItemClickListener
 import com.nanaten.bustime.databinding.FragmentToCollegeBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
@@ -22,7 +25,7 @@ import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 
-class ToCollegeFragment : DaggerFragment() {
+class ToCollegeFragment : DaggerFragment(), ItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -39,6 +42,7 @@ class ToCollegeFragment : DaggerFragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_college, container, false)
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
+        mAdapter.setOnItemClickListener(this)
         binding.apply {
             toolbar.setToolbar(
                 getString(R.string.to_collage_label),
@@ -71,6 +75,8 @@ class ToCollegeFragment : DaggerFragment() {
         mViewModel.isLoading.observe(viewLifecycleOwner, Observer {
             if (!it) binding.swipeLayout.isRefreshing = false
         })
+
+
         return binding.root
     }
 
@@ -83,10 +89,27 @@ class ToCollegeFragment : DaggerFragment() {
         super.onResume()
         mViewModel.startTimer()
         mViewModel.getCalendar()
+        mViewModel.getPdf()
     }
 
     override fun onPause() {
         super.onPause()
         mViewModel.stopTimer()
+    }
+
+    override fun onItemClick(index: Int, view: View) {
+        when (view.tag) {
+            "Calendar" -> {
+                CustomTabsIntent.Builder()
+                    .build()
+                    .launchUrl(view.context, Uri.parse(mViewModel.pdfUrl.value?.calendar))
+            }
+            "TimeTable" -> {
+                CustomTabsIntent.Builder()
+                    .build()
+                    .launchUrl(view.context, Uri.parse(mViewModel.pdfUrl.value?.timeTable))
+            }
+            else -> return
+        }
     }
 }

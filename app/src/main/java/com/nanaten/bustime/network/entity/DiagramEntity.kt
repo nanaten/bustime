@@ -5,10 +5,6 @@
 
 package com.nanaten.bustime.network.entity
 
-class DiagramListEntity(
-    var list: List<DiagramEntity>? = null
-)
-
 class DiagramEntity(
     var hour: Int = 0,
     var minute: Int = 0,
