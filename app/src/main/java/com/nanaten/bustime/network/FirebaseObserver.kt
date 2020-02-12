@@ -50,6 +50,7 @@ class FirebaseObserver {
         return flow {
             emit(suspendCoroutine { cont ->
                 firestore.collection(diagramName).whereGreaterThanOrEqualTo(second, now)
+                    .orderBy(second)
                     .get()
                     .addOnSuccessListener { querySnapShot ->
                         val diagrams =
