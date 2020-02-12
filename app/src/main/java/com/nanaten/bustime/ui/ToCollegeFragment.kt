@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
 import com.nanaten.bustime.databinding.FragmentToCollegeBinding
@@ -49,12 +50,14 @@ class ToCollegeFragment : DaggerFragment() {
             (toCollegeRv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
+            swipeLayout.setOnRefreshListener {
+                getDiagrams()
+            }
         }
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
-            val target = if (tabPosition == 0) "ToStation" else "ToCollege"
-            mViewModel.getDiagrams(target)
+            getDiagrams()
         })
 
         mViewModel.diagrams.observe(viewLifecycleOwner, Observer {
@@ -64,7 +67,16 @@ class ToCollegeFragment : DaggerFragment() {
         mViewModel.next.observe(viewLifecycleOwner, Observer {
             mAdapter.updateTime()
         })
+
+        mViewModel.isLoading.observe(viewLifecycleOwner, Observer {
+            if (!it) binding.swipeLayout.isRefreshing = false
+        })
         return binding.root
+    }
+
+    private fun getDiagrams() {
+        val target = if (tabPosition == 0) Const.TO_STA else Const.TO_COL
+        mViewModel.getDiagrams(target)
     }
 
     override fun onResume() {

@@ -29,9 +29,10 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     private val oldDate = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
+    val isLoading = MutableLiveData<Boolean>(false)
 
     /**
-     * 次のバスまでの時間を3つのLiveDataから割り出す
+     * 次のバスまでの時間を2つのLiveDataから割り出す
      * nowSecond: 現在の時間(sec)
      * diagrams: 本日の時刻表
      */
@@ -68,9 +69,11 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun getDiagrams(target: String) {
+        isLoading.postValue(true)
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         if (oldDate.value == today) {
             diagrams.postValue(diagrams.value)
+            isLoading.postValue(false)
             return
         }
         viewModelScope.launch {
@@ -86,6 +89,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            isLoading.postValue(false)
         }
     }
 
