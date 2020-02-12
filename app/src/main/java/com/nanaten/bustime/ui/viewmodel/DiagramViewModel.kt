@@ -10,11 +10,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanaten.bustime.network.entity.*
 import com.nanaten.bustime.network.entity.Calendar
-import com.nanaten.bustime.network.entity.Diagram
-import com.nanaten.bustime.network.entity.DiagramEntity
-import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
+import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -32,6 +31,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
     val pdfUrl = MutableLiveData<RemotePdf>()
+    val networkResult = LiveEvent<NetworkResult>()
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -63,9 +63,15 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             return
         }
         viewModelScope.launch {
-            val cal = useCase.getTodayCalendar()
-            cal.collect {
-                calendar.postValue(it)
+            try {
+                val cal = useCase.getTodayCalendar()
+                cal.collect {
+                    calendar.postValue(it)
+                    networkResult.call(NetworkResult.Success)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                networkResult.call(NetworkResult.Error)
             }
         }
     }
@@ -80,7 +86,11 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
         viewModelScope.launch {
             try {
-                val diagram = calendar.value?.diagram ?: return@launch
+                val diagram = calendar.value?.diagram
+                if (diagram == null) {
+                    isLoading.postValue(false)
+                    return@launch
+                }
                 val diagramName = "$diagram$target"
                 val now = nowSecond.value ?: 0L
                 val list = useCase.getDiagrams(diagramName, now)
@@ -88,11 +98,13 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     diagrams.postValue(it)
                 }
                 oldDate.postValue(today)
+                networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
-                e.printStackTrace()
+                networkResult.call(NetworkResult.Error)
             }
             isLoading.postValue(false)
         }
+
     }
 
     fun startTimer() {
@@ -122,10 +134,12 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             viewModelScope.launch {
                 useCase.getPdfUrl()
                     .collect {
+                        networkResult.call(NetworkResult.Success)
                         pdfUrl.postValue(it)
                     }
             }
         } catch (e: Exception) {
+            networkResult.call(NetworkResult.Error)
             e.printStackTrace()
         }
     }

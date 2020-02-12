@@ -18,5 +18,6 @@
     <string name="calendar">カレンダー</string>
     <string name="recent_bus">次に来るバス一覧</string>
     <string name="time_is_indication">※到着時刻は目安です</string>
+    <string name="network_error_message">通信エラーが発生しました</string>
 
 </resources>
