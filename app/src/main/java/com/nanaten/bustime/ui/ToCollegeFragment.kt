@@ -11,6 +11,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanaten.bustime.Const
@@ -49,7 +50,10 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
             toolbar.setToolbar(
                 getString(R.string.to_collage_label),
                 backVisibility = View.GONE,
-                settingVisibility = View.VISIBLE
+                settingVisibility = View.VISIBLE,
+                settingListener = {
+                    findNavController().navigate(R.id.action_home_to_settings)
+                }
             )
             toCollegeRv.layoutManager = LinearLayoutManager(context)
             toCollegeRv.adapter = mAdapter

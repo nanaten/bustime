@@ -13,7 +13,13 @@
         android:name="com.nanaten.bustime.ui.ScaffoldFragment"
         android:label=" "
         tools:layout="@layout/fragment_scaffold">
-
+        <action
+            android:id="@+id/action_home_to_settings"
+            app:destination="@id/settingFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/toStationFragment"
@@ -27,6 +33,13 @@
         android:name="com.nanaten.bustime.ui.ToCollegeFragment"
         android:label=" "
         tools:layout="@layout/fragment_to_college">
+
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.nanaten.bustime.ui.SettingsFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_settings">
 
     </fragment>
 </navigation>

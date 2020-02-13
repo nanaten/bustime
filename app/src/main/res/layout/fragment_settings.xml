@@ -3,16 +3,16 @@
   ~ Copyright (c) 2020. nanaten All rights reserved.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.SettingsFragment">
+<layout>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".ui.SettingsFragment">
 
-</FrameLayout>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
