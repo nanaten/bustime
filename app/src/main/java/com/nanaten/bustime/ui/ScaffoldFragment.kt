@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
+import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
@@ -44,6 +45,8 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
             }
         }
         binding.viewPager.addOnPageChangeListener(this)
+        val page = SharedPref(requireContext()).getFirstViewSetting()
+        binding.viewPager.currentItem = page
         return binding.root
     }
 

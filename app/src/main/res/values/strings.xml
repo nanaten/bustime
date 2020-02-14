@@ -7,6 +7,7 @@
     <string name="to_college">大学行き</string>
     <string name="today_diagram">今日の運行ダイヤ</string>
     <string name="switching">切り替える</string>
+    <string name="cancel">キャンセル</string>
     <string name="more_time">出発まであと</string>
     <string name="start_college">大学発</string>
     <string name="arrival_station">浄水駅着</string>
@@ -24,5 +25,6 @@
     <string name="discraim">免責事項</string>
     <string name="dark_mode">ダークテーマ</string>
     <string name="theme_is_changed">テーマを切り替えました。アプリを再起動してください。</string>
+    <string name="first_view_title">表示</string>
 
 </resources>

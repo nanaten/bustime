@@ -29,13 +29,14 @@ class SettingsViewModel : ViewModel() {
         SharedPref(context).setIsDarkMode(value)
     }
 
-    fun getFirstView(context: Context) {
+    fun getFirstView(context: Context): Int {
         val firstView = SharedPref(context).getFirstViewSetting()
         this.firstView.postValue(firstView)
+        return firstView
     }
 
-    fun setFirstView(context: Context) {
-        val value = firstView.value ?: 0
-        SharedPref(context).setFirstViewSetting(value)
+    fun setFirstView(context: Context, page: Int) {
+        firstView.postValue(page)
+        SharedPref(context).setFirstViewSetting(page)
     }
 }

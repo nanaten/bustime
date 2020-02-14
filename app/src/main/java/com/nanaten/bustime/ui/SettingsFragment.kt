@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -47,10 +48,38 @@ class SettingsFragment : DaggerFragment() {
                     .show()
                 mViewModel.setIsDarkMode(it.context)
             }
+            firstViewLayout.setOnClickListener {
+                changeFirstView()
+            }
         }
 
         mViewModel.getIsDarkMode(requireContext())
         mViewModel.getFirstView(requireContext())
         return binding.root
+    }
+
+    private fun changeFirstView() {
+        context?.let {
+            val pageName =
+                if (mViewModel.getFirstView(requireContext()) == 0) getString(R.string.to_station) else getString(
+                    R.string.to_college
+                )
+            val changePageName =
+                if (mViewModel.getFirstView(requireContext()) == 0) getString(R.string.to_college) else getString(
+                    R.string.to_station
+                )
+            AlertDialog.Builder(it).apply {
+                val message = "現在「${pageName}」が最初に表示されます。「${changePageName}」に変更しますか？"
+                setTitle(getString(R.string.first_view_title))
+                setMessage(message)
+                setPositiveButton(R.string.switching) { _, _ ->
+                    val page = if (mViewModel.getFirstView(requireContext()) == 0) 1 else 0
+                    mViewModel.setFirstView(requireContext(), page)
+                }
+                setNegativeButton(R.string.no_switching, null)
+                show()
+            }
+        }
+
     }
 }
