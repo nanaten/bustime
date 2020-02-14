@@ -76,7 +76,7 @@ class SettingsFragment : DaggerFragment() {
                     val page = if (mViewModel.getFirstView(requireContext()) == 0) 1 else 0
                     mViewModel.setFirstView(requireContext(), page)
                 }
-                setNegativeButton(R.string.no_switching, null)
+                setNegativeButton(R.string.cancel, null)
                 show()
             }
         }
