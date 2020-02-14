@@ -7,10 +7,11 @@ package com.nanaten.bustime
 
 import android.content.Context
 
-class SharedPref(private val context: Context) {
+class SharedPref(context: Context) {
     companion object {
         const val SHARED_PREFERENCES_KEY = "BUSTIME_SHARED_PREFERENCES"
-        const val FIRST_VIEW = "BUSTIME_FIRST_VIEW"
+        const val FIRST_VIEW = "FIRST_VIEW"
+        const val DARK_MODE = "DARK_MODE"
     }
 
     private val sharedPreferences =
@@ -21,9 +22,20 @@ class SharedPref(private val context: Context) {
         return sharedPreferences.getInt(FIRST_VIEW, 0)
     }
 
-    fun setFirstViewSetting(value: Int) {
+    fun setFirstViewSetting(firstView: Int) {
         sharedPreferences.edit()
-            .putInt(FIRST_VIEW, value)
+            .putInt(FIRST_VIEW, firstView)
+            .apply()
+    }
+
+    // ダークモード ON/OFF
+    fun getIsDarkMode(): Boolean {
+        return sharedPreferences.getBoolean(DARK_MODE, false)
+    }
+
+    fun setIsDarkMode(isDarkMode: Boolean) {
+        sharedPreferences.edit()
+            .putBoolean(DARK_MODE, true)
             .apply()
     }
 }
