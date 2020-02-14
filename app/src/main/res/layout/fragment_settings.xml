@@ -42,22 +42,26 @@
                 android:text="@string/first_view_setting"
                 android:textColor="@color/colorBlackText"
                 android:textSize="@dimen/text_size_small"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/first_view"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="@dimen/default_margin"
-                android:padding="4dp"
-                android:rotation="180"
-                android:src="@drawable/ic_arrow_back"
-                android:tint="@color/colorGreyText"
+            <TextView
+                android:id="@+id/first_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/wide_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:text="@{viewModel.firstView == 0 ? `浄水駅行き` : `大学行き`}"
+                android:textColor="@color/colorGreyText"
+                android:textSize="@dimen/text_size_small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
