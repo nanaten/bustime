@@ -99,7 +99,7 @@
                     android:layout_marginTop="@dimen/default_margin"
                     android:layout_marginBottom="@dimen/default_margin"
                     android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/colorGreyText"
+                    android:textColor="@color/colorBlackText"
                     android:text="@{viewModel.version}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
