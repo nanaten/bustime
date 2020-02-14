@@ -48,7 +48,7 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
         mAdapter.setOnItemClickListener(this)
         binding.apply {
             toolbar.setToolbar(
-                getString(R.string.to_collage_label),
+                getString(R.string.to_college),
                 backVisibility = View.GONE,
                 settingVisibility = View.VISIBLE,
                 settingListener = {

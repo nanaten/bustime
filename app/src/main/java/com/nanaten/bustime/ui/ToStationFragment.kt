@@ -48,7 +48,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         mAdapter.setOnItemClickListener(this)
         binding.apply {
             toolbar.setToolbar(
-                getString(R.string.to_station_label),
+                getString(R.string.to_station),
                 backVisibility = View.GONE,
                 settingVisibility = View.VISIBLE,
                 settingListener = {
