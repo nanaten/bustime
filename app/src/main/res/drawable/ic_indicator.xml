@@ -13,7 +13,7 @@
         android:fillColor="#B2BEC3" />
     <path
         android:pathData="M66,6m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"
-        android:fillColor="#0984E3" />
+        android:fillColor="@color/colorPrimary" />
     <path
         android:pathData="M22,6m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
         android:fillColor="#B2BEC3" />

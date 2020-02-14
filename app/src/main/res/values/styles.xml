@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,4 +9,9 @@
         <item name="android:textColor">@color/colorBlackText</item>
     </style>
 
+    <style name="SwitchStyle" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorSwitchThumbNormal">@color/colorGroupedBackground</item>
+        <item name="android:colorForeground">@color/colorGreyText</item>
+    </style>
 </resources>
