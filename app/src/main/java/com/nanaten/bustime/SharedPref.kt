@@ -35,7 +35,7 @@ class SharedPref(context: Context) {
 
     fun setIsDarkMode(isDarkMode: Boolean) {
         sharedPreferences.edit()
-            .putBoolean(DARK_MODE, true)
+            .putBoolean(DARK_MODE, isDarkMode)
             .apply()
     }
 }

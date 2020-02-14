@@ -23,5 +23,6 @@
     <string name="this_app">このアプリについて</string>
     <string name="discraim">免責事項</string>
     <string name="dark_mode">ダークテーマ</string>
+    <string name="theme_is_changed">テーマを切り替えました。アプリを再起動してください。</string>
 
 </resources>
