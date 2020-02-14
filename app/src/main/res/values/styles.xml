@@ -17,7 +17,10 @@
     </style>
 
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:titleTextColor">@color/colorBlackText</item>
         <item name="android:textColor">@color/colorBlackText</item>
+        <item name="android:textColorPrimary">@color/colorBlackText</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
