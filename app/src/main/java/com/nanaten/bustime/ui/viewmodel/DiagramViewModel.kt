@@ -87,7 +87,8 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
-                if (diagram == null) {
+                val isSuspend = calendar.value?.isSuspend ?: false
+                if (diagram == null || isSuspend) {
                     isLoading.postValue(false)
                     return@launch
                 }

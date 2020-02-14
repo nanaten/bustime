@@ -8,5 +8,6 @@ package com.nanaten.bustime.network.entity
 class CalendarEntity(
     var date: String = "",
     var diagram: String = "",
-    var diagramName: String = ""
+    var diagramName: String = "",
+    var isSuspend: Boolean = false
 )

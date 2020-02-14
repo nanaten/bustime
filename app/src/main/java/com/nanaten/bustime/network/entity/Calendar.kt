@@ -12,11 +12,13 @@ import kotlinx.android.parcel.Parcelize
 data class Calendar(
     val date: String,
     val diagram: String,
-    val diagramName: String
+    val diagramName: String,
+    val isSuspend: Boolean
 ) : Parcelable {
     constructor(entity: CalendarEntity) : this(
         entity.date,
         entity.diagram,
-        entity.diagramName
+        entity.diagramName,
+        entity.isSuspend
     )
 }
