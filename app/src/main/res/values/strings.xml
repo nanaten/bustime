@@ -22,5 +22,6 @@
     <string name="version">バージョン</string>
     <string name="this_app">このアプリについて</string>
     <string name="discraim">免責事項</string>
+    <string name="dark_mode">ダークテーマ</string>
 
 </resources>

@@ -19,10 +19,9 @@ class SettingsViewModel : ViewModel() {
         return BuildConfig.VERSION_NAME
     }
 
-    fun getIsDarkMode(context: Context): Boolean {
+    fun getIsDarkMode(context: Context) {
         val isDarkMode = SharedPref(context).getIsDarkMode()
         this.isDarkMode.postValue(isDarkMode)
-        return isDarkMode
     }
 
     fun setIsDarkMode(context: Context) {
@@ -30,10 +29,9 @@ class SettingsViewModel : ViewModel() {
         SharedPref(context).setIsDarkMode(value)
     }
 
-    fun getFirstView(context: Context): Int {
+    fun getFirstView(context: Context) {
         val firstView = SharedPref(context).getFirstViewSetting()
         this.firstView.postValue(firstView)
-        return firstView
     }
 
     fun setFirstView(context: Context) {

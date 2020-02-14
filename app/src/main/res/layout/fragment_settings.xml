@@ -24,44 +24,89 @@
             layout="@layout/toolbar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/first_view_layout"
+            android:id="@+id/view_setting_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
             android:background="@drawable/res_border_1px"
-            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <TextView
-                android:id="@+id/first_view_label"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/first_view_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/wide_margin"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
-                android:text="@string/first_view_setting"
-                android:textColor="@color/colorBlackText"
-                android:textSize="@dimen/text_size_small"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/first_view"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/first_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/wide_margin"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
-                android:text="@{viewModel.firstView == 0 ? `浄水駅行き` : `大学行き`}"
-                android:textColor="@color/colorGreyText"
-                android:textSize="@dimen/text_size_small"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/res_border_1px"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/first_view_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/wide_margin"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/first_view_setting"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/first_view"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/first_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/wide_margin"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@{viewModel.firstView == 0 ? `浄水駅行き` : `大学行き`}"
+                    android:textColor="@color/colorGreyText"
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dark_mode_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/res_border_bottom_1px"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_view_layout">
+
+                <TextView
+                    android:id="@+id/dark_mode_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/wide_margin"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/dark_mode"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/dark_mode_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/wide_margin"
+                    android:checked="@={viewModel.isDarkMode}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
-            app:layout_constraintTop_toBottomOf="@id/first_view_layout">
+            app:layout_constraintTop_toBottomOf="@id/view_setting_layout">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,8 +123,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/res_border_1px"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -99,12 +144,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/wide_margin"
                     android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/wide_margin"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/colorBlackText"
                     android:text="@{viewModel.version}"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="@dimen/text_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -116,9 +161,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/res_border_bottom_1px"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toBottomOf="@id/version_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/version_layout">
 
                 <TextView
                     android:id="@+id/this_app_label"
@@ -154,9 +199,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/res_border_bottom_1px"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toBottomOf="@id/this_app_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/this_app_layout">
 
                 <TextView
                     android:id="@+id/discraim_label"
