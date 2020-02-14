@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.nanaten.bustime.ui.viewmodel.SettingViewModel" />
+            type="com.nanaten.bustime.ui.viewmodel.SettingsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

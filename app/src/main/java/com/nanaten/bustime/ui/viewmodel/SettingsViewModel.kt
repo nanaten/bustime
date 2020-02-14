@@ -8,7 +8,7 @@ package com.nanaten.bustime.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import com.nanaten.bustime.BuildConfig
 
-class SettingViewModel : ViewModel() {
+class SettingsViewModel : ViewModel() {
     fun getVersion(): String {
         return BuildConfig.VERSION_NAME
     }
