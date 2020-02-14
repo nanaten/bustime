@@ -5,7 +5,10 @@
 
 package com.nanaten.bustime.di.ui
 
+import androidx.lifecycle.ViewModel
 import com.nanaten.bustime.ui.SettingsFragment
+import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
+import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -14,6 +17,8 @@ import dagger.android.ContributesAndroidInjector
 @Suppress("UNUSED")
 internal abstract class SettingsFragmentModule {
 
+    @Binds
+    abstract fun bindViewModel(viewModel: SettingsViewModel): ViewModel
 
     @ContributesAndroidInjector
     abstract fun provideFragment(): SettingsFragment
