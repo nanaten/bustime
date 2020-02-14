@@ -6,4 +6,5 @@
     <color name="colorGroupedBackground">#F2F2F2</color>
     <color name="colorBlackText">#2D3436</color>
     <color name="colorGreyText">#B2BEC3</color>
+    <color name="transparent">#FFFFFFFF</color>
 </resources>

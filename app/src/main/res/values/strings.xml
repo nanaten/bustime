@@ -5,8 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="to_station">浄水駅行き</string>
     <string name="to_college">大学行き</string>
-    <string name="to_station_label">浄水駅行き</string>
-    <string name="to_collage_label">大学行き</string>
     <string name="today_diagram">今日の運行ダイヤ</string>
     <string name="switching">切り替える</string>
     <string name="more_time">出発まであと</string>
@@ -19,5 +17,10 @@
     <string name="recent_bus">次に来るバス一覧</string>
     <string name="time_is_indication">※到着時刻は目安です</string>
     <string name="network_error_message">通信エラーが発生しました</string>
+    <string name="setting">設定</string>
+    <string name="first_view_setting">起動時に表示する項目</string>
+    <string name="version">バージョン</string>
+    <string name="this_app">このアプリについて</string>
+    <string name="discraim">免責事項</string>
 
 </resources>
