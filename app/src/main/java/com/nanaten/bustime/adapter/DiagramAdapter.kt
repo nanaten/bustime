@@ -6,6 +6,7 @@
 package com.nanaten.bustime.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +51,8 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
                 holder.setIcon(tabPosition)
             }
             is PdfItemViewHolder -> {
+                holder.binding.recentHeader.visibility =
+                    if (list.isEmpty()) View.GONE else View.VISIBLE
                 holder.binding.calendarLayout.setOnClickListener {
                     it.tag = "Calendar"
                     getItemClickListener().onItemClick(position, it)
@@ -70,6 +73,7 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
 
     fun updateDiagram(list: List<Diagram>) {
         this.list = list
+        notifyItemChanged(1)
         list.forEachIndexed { i, _ ->
             notifyItemChanged(i + 2)
         }
