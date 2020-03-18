@@ -24,21 +24,21 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
     override suspend fun getTodayCalendar(): Flow<Calendar> {
         return repository.getTodayCalendar()
             .map {
-                Calendar(it)
+                Calendar.convertFrom(it)
             }
     }
 
     override suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<Diagram>> {
         return repository.getDiagrams(diagramName, now)
             .map { list ->
-                list.map { Diagram(it) }
+                list.map { Diagram.convertFrom(it) }
             }
     }
 
     override suspend fun getPdfUrl(): Flow<RemotePdf> {
         return repository.getPdfUrl()
             .map {
-                RemotePdf(it)
+                RemotePdf.convertFrom(it)
             }
     }
 }

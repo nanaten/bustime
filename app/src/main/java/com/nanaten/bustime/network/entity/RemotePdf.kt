@@ -9,8 +9,12 @@ data class RemotePdf(
     val calendar: String,
     val timeTable: String
 ) {
-    constructor(entity: RemotePdfEntity) : this(
-        entity.calendar,
-        entity.timeTable
-    )
+    companion object RemotePdfFactory : Translator<RemotePdfEntity, RemotePdf> {
+        override fun convertFrom(entity: RemotePdfEntity): RemotePdf {
+            return RemotePdf(
+                entity.calendar,
+                entity.timeTable
+            )
+        }
+    }
 }

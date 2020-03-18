@@ -19,14 +19,19 @@ class Diagram(
     val arrivalMinute: Int,
     val arrivalSecond: Int
 ) : Parcelable {
-    constructor(entity: DiagramEntity) : this(
-        entity.hour,
-        entity.minute,
-        entity.second,
-        entity.isLast,
-        entity.isReturn,
-        entity.arrivalHour,
-        entity.arrivalMinute,
-        entity.arrivalSecond
-    )
+
+    companion object DiagramFactory : Translator<DiagramEntity, Diagram> {
+        override fun convertFrom(entity: DiagramEntity): Diagram {
+            return Diagram(
+                entity.hour,
+                entity.minute,
+                entity.second,
+                entity.isLast,
+                entity.isReturn,
+                entity.arrivalHour,
+                entity.arrivalMinute,
+                entity.arrivalSecond
+            )
+        }
+    }
 }

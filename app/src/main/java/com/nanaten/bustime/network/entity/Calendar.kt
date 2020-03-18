@@ -15,10 +15,15 @@ data class Calendar(
     val diagramName: String,
     val isSuspend: Boolean
 ) : Parcelable {
-    constructor(entity: CalendarEntity) : this(
-        entity.date,
-        entity.diagram,
-        entity.diagramName,
-        entity.isSuspend
-    )
+
+    companion object CalendarFactory : Translator<CalendarEntity, Calendar> {
+        override fun convertFrom(entity: CalendarEntity): Calendar {
+            return Calendar(
+                entity.date,
+                entity.diagram,
+                entity.diagramName,
+                entity.isSuspend
+            )
+        }
+    }
 }
