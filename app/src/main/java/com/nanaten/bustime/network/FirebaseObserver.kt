@@ -32,7 +32,7 @@ class FirebaseObserver {
     suspend fun getTodayCalendar(): Flow<CalendarEntity> {
         return flow {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            emit(suspendCoroutine { cont ->
+            emit(suspendCoroutine<CalendarEntity> { cont ->
                 firestore.collection(calendar).document(today)
                     .get()
                     .addOnSuccessListener {
@@ -48,7 +48,7 @@ class FirebaseObserver {
 
     suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>> {
         return flow {
-            emit(suspendCoroutine { cont ->
+            emit(suspendCoroutine<List<DiagramEntity>> { cont ->
                 firestore.collection(diagramName).whereGreaterThanOrEqualTo(second, now)
                     .orderBy(second)
                     .get()
@@ -68,7 +68,7 @@ class FirebaseObserver {
     suspend fun getPdfUrl(): Flow<String> {
 
         return flow {
-            emit(suspendCoroutine { cont ->
+            emit(suspendCoroutine<String> { cont ->
                 val remoteConfig = FirebaseRemoteConfig.getInstance()
                 val configSettings = FirebaseRemoteConfigSettings.Builder()
                     .setMinimumFetchIntervalInSeconds(3600L)
