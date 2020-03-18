@@ -33,5 +33,9 @@ class Diagram(
                 entity.arrivalSecond
             )
         }
+
+        fun createEmptyData(): Diagram {
+            return convertFrom(DiagramEntity())
+        }
     }
 }

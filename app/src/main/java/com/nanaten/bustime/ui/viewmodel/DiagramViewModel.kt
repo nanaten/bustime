@@ -10,8 +10,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nanaten.bustime.network.entity.*
 import com.nanaten.bustime.network.entity.Calendar
+import com.nanaten.bustime.network.entity.Diagram
+import com.nanaten.bustime.network.entity.NetworkResult
+import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
@@ -40,7 +42,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
      */
     val next: LiveData<Long> =
         combine(0L, nowSecond, diagrams) { _, sec, diagrams ->
-            val nearDiagram = diagrams.firstOrNull { it.second >= sec } ?: Diagram(DiagramEntity())
+            val nearDiagram = diagrams.firstOrNull { it.second >= sec } ?: Diagram.createEmptyData()
             startTime.postValue(String.format("%02d:%02d", nearDiagram.hour, nearDiagram.minute))
             arrivalTime.postValue(
                 String.format(
@@ -53,7 +55,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             val nearSecond = nearDiagram.second
             if (nearSecond != 0) nearSecond - sec else 0
         }
-    val appIsActive = ObservableField<Boolean>(false)
+    private val appIsActive = ObservableField<Boolean>(false)
 
     fun getCalendar() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -105,7 +107,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             }
             isLoading.postValue(false)
         }
-
     }
 
     fun startTimer() {
