@@ -27,4 +27,5 @@ iOS版は[hayabusabusa](https://github.com/hayabusabusa)さんが作成してい
 - CustomTabs
 
 # 注意事項
-当方は中京大学とは **何の縁もゆかりもございません。**
+- 実行には `google-services.json` が必要です。
+- 当方は中京大学とは **何の縁もゆかりもございません。**
