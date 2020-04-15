@@ -11,6 +11,7 @@ class DiagramEntity(
     var second: Int = 0,
     var isLast: Boolean = false,
     var isReturn: Boolean = false,
+    var isKaizu: Boolean = false,
     var arrivalHour: Int = 0,
     var arrivalMinute: Int = 0,
     var arrivalSecond: Int = 0

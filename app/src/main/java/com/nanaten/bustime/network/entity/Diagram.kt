@@ -15,6 +15,7 @@ class Diagram(
     val second: Int,
     val isLast: Boolean,
     val isReturn: Boolean,
+    var isKaizu: Boolean = false,
     val arrivalHour: Int,
     val arrivalMinute: Int,
     val arrivalSecond: Int
@@ -28,6 +29,7 @@ class Diagram(
                 entity.second,
                 entity.isLast,
                 entity.isReturn,
+                entity.isKaizu,
                 entity.arrivalHour,
                 entity.arrivalMinute,
                 entity.arrivalSecond
