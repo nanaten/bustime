@@ -26,5 +26,8 @@
     <string name="dark_mode">ダークテーマ</string>
     <string name="theme_is_changed">テーマを切り替えました。アプリを再起動してください。</string>
     <string name="first_view_title">表示</string>
+    <string name="is_kaizu">貝津経由</string>
+    <string name="is_return">折返し</string>
+    <string name="is_last">最終バス</string>
 
 </resources>
