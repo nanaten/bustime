@@ -32,6 +32,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
+    val nextDiagram = MutableLiveData<Diagram>()
     val pdfUrl = MutableLiveData<RemotePdf>()
     val networkResult = LiveEvent<NetworkResult>()
 
@@ -43,6 +44,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val next: LiveData<Long> =
         combine(0L, nowSecond, diagrams) { _, sec, diagrams ->
             val nearDiagram = diagrams.firstOrNull { it.second >= sec } ?: Diagram.createEmptyData()
+            nextDiagram.postValue(nearDiagram)
             startTime.postValue(String.format("%02d:%02d", nearDiagram.hour, nearDiagram.minute))
             arrivalTime.postValue(
                 String.format(

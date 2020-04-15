@@ -14,6 +14,8 @@
         <variable
             name="viewModel"
             type="com.nanaten.bustime.ui.viewmodel.DiagramViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -67,18 +69,74 @@
             app:layout_constraintTop_toBottomOf="@id/diagram_type_layout">
 
 
+            <LinearLayout
+                android:id="@+id/label_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/is_last"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/res_button_last"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:paddingBottom="8dp"
+                    android:text="@string/is_last"
+                    android:textColor="@color/colorLast"
+                    android:textSize="@dimen/text_size_small"
+                    android:visibility="@{viewModel.nextDiagram.last ? View.VISIBLE : View.GONE}" />
+
+                <TextView
+                    android:id="@+id/is_return"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/res_button_default"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:paddingBottom="8dp"
+                    android:text="@string/is_return"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_small"
+                    android:visibility="@{viewModel.nextDiagram.return ? View.VISIBLE : View.GONE}" />
+
+                <TextView
+                    android:id="@+id/is_kaizu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/res_button_default"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:paddingBottom="8dp"
+                    android:text="@string/is_kaizu"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_small"
+                    android:visibility="@{viewModel.nextDiagram.kaizu ? View.VISIBLE : View.GONE}" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/more_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/wide_margin"
+                android:layout_marginTop="@dimen/middle_margin"
+                app:layout_goneMarginTop="@dimen/wide_margin"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:text="@string/more_time"
                 android:textSize="@dimen/text_size_small"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/label_layout" />
 
             <TextView
                 android:id="@+id/target_time"
