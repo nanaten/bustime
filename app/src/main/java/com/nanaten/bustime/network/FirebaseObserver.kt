@@ -37,6 +37,7 @@ class FirebaseObserver {
                     .get()
                     .addOnSuccessListener {
                         val calendar = it.toObject(CalendarEntity::class.java)
+                        calendar?.date = it.id
                         cont.resume(calendar ?: CalendarEntity())
                     }
                     .addOnFailureListener {
@@ -49,7 +50,7 @@ class FirebaseObserver {
     suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>> {
         return flow {
             emit(suspendCoroutine<List<DiagramEntity>> { cont ->
-                firestore.collection(diagramName).whereGreaterThanOrEqualTo(second, now)
+                firestore.collection(diagramName)
                     .orderBy(second)
                     .get()
                     .addOnSuccessListener { querySnapShot ->
