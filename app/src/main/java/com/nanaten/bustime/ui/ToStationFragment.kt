@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
@@ -24,6 +23,7 @@ import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
+import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -34,6 +34,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
     private var binding: FragmentToStationBinding by autoCleared()
+
     // タブのポジション設定
     // 本当は動的に取りたい
     private val tabPosition = 0
@@ -55,7 +56,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
                     findNavController().navigate(R.id.action_home_to_settings)
                 }
             )
-            toStationRv.layoutManager = LinearLayoutManager(context)
+            toStationRv.layoutManager = CustomLinearLayoutManager(context)
             toStationRv.adapter = mAdapter
             (toStationRv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
             lifecycleOwner = viewLifecycleOwner
@@ -71,7 +72,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         })
 
         mViewModel.diagrams.observe(viewLifecycleOwner, Observer {
-            mAdapter.updateDiagram(it.filter { it.second >= mViewModel.nowSecond.value ?: 0L })
+            mAdapter.updateDiagram(it)
         })
 
         mViewModel.next.observe(viewLifecycleOwner, Observer {
