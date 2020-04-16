@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by m.coder on 2020/4/16.
+  ~ Copyright (c) 2020. nanaten All rights reserved.
+  -->
+
+<layout>
+
+    <data>
+
+        <variable
+            name="calendar"
+            type="com.nanaten.bustime.network.entity.Calendar" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/operation_end_image"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:src="@drawable/ic_operationend"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{calendar.isSuspend ? @string/operation_is_suspend : @string/operation_is_end}"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/operation_end_image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
