@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.ListItemDiagramBinding
+import com.nanaten.bustime.databinding.ListItemEmptyBinding
 import com.nanaten.bustime.databinding.ListItemPdfBinding
 import com.nanaten.bustime.databinding.ListItemRecentBusBinding
 import com.nanaten.bustime.network.entity.Calendar
@@ -21,10 +22,12 @@ import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPosition: Int) :
     BaseRecyclerViewAdapter() {
     private var list: List<Diagram> = listOf()
+    private var allList: List<Diagram> = listOf()
     private var calendar: Calendar? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            R.layout.list_item_empty -> EmptyItemViewHolder(parent)
             R.layout.list_item_diagram -> DiagramItemViewHolder(parent)
             R.layout.list_item_pdf -> PdfItemViewHolder(parent)
             else -> RecentItemViewHolder(parent)
@@ -32,19 +35,27 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
     }
 
     override fun getItemCount(): Int {
-        return list.size + 2
+        return if (calendar?.isSuspend == true || isOperationEnd()) 1 else list.size + 2
+    }
+
+    private fun isOperationEnd(): Boolean {
+        return allList.isNotEmpty() && list.isEmpty()
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> R.layout.list_item_diagram
-            1 -> R.layout.list_item_pdf
-            else -> R.layout.list_item_recent_bus
-        }
+        return if (calendar?.isSuspend == true || isOperationEnd()) R.layout.list_item_empty else
+            when (position) {
+                0 -> R.layout.list_item_diagram
+                1 -> R.layout.list_item_pdf
+                else -> R.layout.list_item_recent_bus
+            }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
+            is EmptyItemViewHolder -> {
+                holder.bind(calendar)
+            }
             is DiagramItemViewHolder -> {
                 holder.bind(calendar)
                 holder.setViewModel(viewModel)
@@ -72,9 +83,10 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
     }
 
     fun updateDiagram(list: List<Diagram>) {
-        this.list = list
+        this.allList = list
+        this.list = list.filter { it.second >= viewModel.nowSecond.value ?: 0L }
         notifyItemChanged(1)
-        list.forEachIndexed { i, _ ->
+        this.list.forEachIndexed { i, _ ->
             notifyItemChanged(i + 2)
         }
     }
@@ -128,6 +140,20 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
             false
         )
     ) : RecyclerView.ViewHolder(binding.root) {
+
+    }
+
+    class EmptyItemViewHolder(
+        parent: ViewGroup, val binding: ListItemEmptyBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.list_item_empty,
+            parent,
+            false
+        )
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Calendar?) {
+            binding.calendar = item
+        }
     }
 
     class RecentItemViewHolder(
