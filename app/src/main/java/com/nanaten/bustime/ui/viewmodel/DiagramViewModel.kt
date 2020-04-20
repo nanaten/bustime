@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
@@ -27,6 +28,8 @@ import javax.inject.Inject
 class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) : ViewModel() {
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
+    val toCollegeDiagrams = MutableLiveData<List<Diagram>>()
+    val toStationDiagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
     private val oldDate = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
@@ -57,6 +60,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             val nearSecond = nearDiagram.second
             if (nearSecond != 0) nearSecond - sec else 0
         }
+
     private val appIsActive = ObservableField<Boolean>(false)
 
     fun getCalendar() {
@@ -80,7 +84,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getDiagrams(target: String) {
+    fun getDiagrams() {
         isLoading.postValue(true)
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         if (oldDate.value == today) {
@@ -96,10 +100,10 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     isLoading.postValue(false)
                     return@launch
                 }
-                val diagramName = "$diagram$target"
-                val list = useCase.getDiagrams(diagramName)
+                val list = useCase.getDiagrams(diagram)
                 list.collect {
-                    diagrams.postValue(it)
+                    toCollegeDiagrams.postValue(it.first)
+                    toStationDiagrams.postValue(it.second)
                 }
                 oldDate.postValue(today)
                 networkResult.call(NetworkResult.Success)
@@ -144,6 +148,17 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         } catch (e: Exception) {
             networkResult.call(NetworkResult.Error)
             e.printStackTrace()
+        }
+    }
+
+    fun switchPosition(position: Int) {
+        when (position) {
+            HomeTabs.TO_COLLAGE.value -> {
+                diagrams.postValue(toCollegeDiagrams.value)
+            }
+            else -> {
+                diagrams.postValue(toStationDiagrams.value)
+            }
         }
     }
 }
