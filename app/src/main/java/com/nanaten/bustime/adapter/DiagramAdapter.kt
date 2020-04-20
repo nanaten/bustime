@@ -82,7 +82,8 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
         }
     }
 
-    fun updateDiagram(list: List<Diagram>) {
+    fun updateDiagram(list: List<Diagram>?) {
+        list ?: return
         this.allList = list
         this.list = list.filter { it.second >= viewModel.nowSecond.value ?: 0L }
         notifyItemChanged(1)
