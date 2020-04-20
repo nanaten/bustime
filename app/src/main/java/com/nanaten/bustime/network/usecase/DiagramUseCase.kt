@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 interface DiagramUseCase {
     suspend fun getTodayCalendar(): Flow<Calendar>
-    suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<Diagram>>
+    suspend fun getDiagrams(diagramName: String): Flow<List<Diagram>>
     suspend fun getPdfUrl(): Flow<RemotePdf>
 }
 
@@ -28,8 +28,8 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
             }
     }
 
-    override suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<Diagram>> {
-        return repository.getDiagrams(diagramName, now)
+    override suspend fun getDiagrams(diagramName: String): Flow<List<Diagram>> {
+        return repository.getDiagrams(diagramName)
             .map { list ->
                 list.map { Diagram.convertFrom(it) }
             }

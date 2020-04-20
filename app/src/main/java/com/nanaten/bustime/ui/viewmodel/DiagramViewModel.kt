@@ -97,8 +97,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     return@launch
                 }
                 val diagramName = "$diagram$target"
-                val now = nowSecond.value ?: 0L
-                val list = useCase.getDiagrams(diagramName, now)
+                val list = useCase.getDiagrams(diagramName)
                 list.collect {
                     diagrams.postValue(it)
                 }
