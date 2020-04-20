@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 interface DiagramRepository {
     suspend fun getTodayCalendar(): Flow<CalendarEntity>
-    suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>>
+    suspend fun getDiagrams(diagramName: String): Flow<List<DiagramEntity>>
     suspend fun getPdfUrl(): Flow<RemotePdfEntity>
 }
 
@@ -28,8 +28,8 @@ class DiagramRepositoryImpl @Inject constructor(private val firebaseObserver: Fi
         return firebaseObserver.getTodayCalendar()
     }
 
-    override suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>> {
-        return firebaseObserver.getDiagrams(diagramName, now)
+    override suspend fun getDiagrams(diagramName: String): Flow<List<DiagramEntity>> {
+        return firebaseObserver.getDiagrams(diagramName)
     }
 
     override suspend fun getPdfUrl(): Flow<RemotePdfEntity> {

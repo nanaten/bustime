@@ -47,7 +47,7 @@ class FirebaseObserver {
         }
     }
 
-    suspend fun getDiagrams(diagramName: String, now: Long): Flow<List<DiagramEntity>> {
+    suspend fun getDiagrams(diagramName: String): Flow<List<DiagramEntity>> {
         return flow {
             emit(suspendCoroutine<List<DiagramEntity>> { cont ->
                 firestore.collection(diagramName)
