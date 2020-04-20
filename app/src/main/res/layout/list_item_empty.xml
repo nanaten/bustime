@@ -3,7 +3,9 @@
   ~ Copyright (c) 2020. nanaten All rights reserved.
   -->
 
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,9 +14,7 @@
             type="com.nanaten.bustime.network.entity.Calendar" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,24 +22,106 @@
             android:id="@+id/operation_end_image"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:src="@drawable/ic_operationend"
+            android:src="@drawable/ic_operation_end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4"
+            app:layout_constraintVertical_bias="0.3"
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/operation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@{calendar.isSuspend ? @string/operation_is_suspend : @string/operation_is_end}"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorGreyText"
             android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/operation_end_image" />
+
+        <TextView
+            android:id="@+id/next_calendar_and_diagrams"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorGreyText"
+            android:text="@string/calendar_and_diagrams_can_next"
+            android:textSize="@dimen/text_size_small"
+            app:layout_constraintTop_toBottomOf="@id/operation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/button_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/middle_margin"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/next_calendar_and_diagrams"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:id="@+id/calendar_button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingStart="@dimen/default_margin"
+                android:paddingTop="8dp"
+                android:paddingEnd="@dimen/default_margin"
+                android:paddingBottom="8dp"
+                android:background="@drawable/res_button_default"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/calendar"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/time_table_button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingStart="@dimen/default_margin"
+                android:paddingTop="8dp"
+                android:paddingEnd="@dimen/default_margin"
+                android:paddingBottom="8dp"
+                android:background="@drawable/res_button_default"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_time_table"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/time_table"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_small" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
