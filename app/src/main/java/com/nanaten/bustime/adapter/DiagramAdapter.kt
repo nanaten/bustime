@@ -55,6 +55,14 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
         when (holder) {
             is EmptyItemViewHolder -> {
                 holder.bind(calendar)
+                holder.binding.calendarButton.setOnClickListener {
+                    it.tag = "Calendar"
+                    getItemClickListener().onItemClick(position, it)
+                }
+                holder.binding.timeTableButton.setOnClickListener {
+                    it.tag = "TimeTable"
+                    getItemClickListener().onItemClick(position, it)
+                }
             }
             is DiagramItemViewHolder -> {
                 holder.bind(calendar)
