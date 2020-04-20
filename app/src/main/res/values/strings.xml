@@ -31,4 +31,5 @@
     <string name="is_last">最終バス</string>
     <string name="operation_is_end">本日の運行は終了しました</string>
     <string name="operation_is_suspend">本日は運休です</string>
+    <string name="calendar_and_diagrams_can_next">明日以降の運行カレンダーと時刻表は\n以下から確認できます</string>
 </resources>
