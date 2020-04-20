@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
 import com.nanaten.bustime.adapter.ItemClickListener
@@ -32,7 +31,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
+    lateinit var mViewModel: DiagramViewModel
     private var binding: FragmentToStationBinding by autoCleared()
 
     // タブのポジション設定
@@ -44,6 +43,11 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
+        mViewModel =
+            ViewModelProvider(
+                requireParentFragment(),
+                viewModelFactory
+            ).get(DiagramViewModel::class.java)
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)
@@ -68,7 +72,6 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
             mAdapter.updateCalendar(it)
-            getDiagrams()
         })
 
         mViewModel.diagrams.observe(viewLifecycleOwner, Observer {
@@ -92,20 +95,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
     }
 
     private fun getDiagrams() {
-        val target = if (tabPosition == 0) Const.TO_STA else Const.TO_COL
-        mViewModel.getDiagrams(target)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mViewModel.startTimer()
-        mViewModel.getCalendar()
-        mViewModel.getPdf()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mViewModel.stopTimer()
+        mViewModel.getDiagrams()
     }
 
     override fun onItemClick(index: Int, view: View) {
