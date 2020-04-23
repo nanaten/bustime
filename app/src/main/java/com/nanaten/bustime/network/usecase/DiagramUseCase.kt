@@ -34,12 +34,12 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
     @ExperimentalCoroutinesApi
     override suspend fun getDiagrams(diagramName: String): Flow<Pair<List<Diagram>, List<Diagram>>> {
         return repository.getDiagrams("$diagramName${Const.TO_COL}")
-            .zip(repository.getDiagrams("$diagramName${Const.TO_STA}")) { t1, t2 ->
+            .zip(repository.getDiagrams("$diagramName${Const.TO_STA}")) { toCollege, toStation ->
                 Pair(
-                    t1.map {
+                    toCollege.map {
                         Diagram.convertFrom(it)
                     },
-                    t2.map {
+                    toStation.map {
                         Diagram.convertFrom(it)
                     }
                 )
