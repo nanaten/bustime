@@ -99,5 +99,15 @@ dependencies {
 
     // LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
+
+    // Truth
+    testImplementation 'com.google.truth:truth:1.0.1'
+
+    // mockK
+    testImplementation 'io.mockk:mockk:1.9.3'
+
+    // LiveData & Coroutines Test
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3'
 }
 apply plugin: 'com.google.gms.google-services'
