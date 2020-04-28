@@ -45,6 +45,7 @@ class DiagramViewModelTest {
         viewModel.calendar.value = null
         viewModel.nowSecond.value = null
         viewModel.pdfUrl.value = null
+        viewModel.setOldDate(null)
     }
 
     @After
@@ -87,7 +88,6 @@ class DiagramViewModelTest {
 
     @Test
     fun getDiagramsSuccess() {
-        viewModel.oldDate.value = null
         viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", false)
         runBlocking {
             viewModel.getDiagrams()
@@ -101,7 +101,7 @@ class DiagramViewModelTest {
 
     @Test
     fun getDiagramsOldDateAvailable() {
-        viewModel.oldDate.value = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        viewModel.setOldDate(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
         viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", false)
         runBlocking {
             viewModel.getDiagrams()
@@ -113,7 +113,6 @@ class DiagramViewModelTest {
     fun getDiagramsFailure() {
         mockRepository = getMockRepositoryError()
         viewModel = getViewModel()
-        viewModel.oldDate.value = null
         viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", false)
 
         runBlocking {
@@ -127,7 +126,7 @@ class DiagramViewModelTest {
     fun startTimer() {
         runBlocking {
             viewModel.startTimer()
-            Truth.assertThat(viewModel.appIsActive.get()).isTrue()
+            Truth.assertThat(viewModel.getAppIsActive()).isTrue()
             Truth.assertThat(viewModel.nowSecond.value).isNotNull()
         }
     }
@@ -136,7 +135,7 @@ class DiagramViewModelTest {
     fun stopTimer() {
         runBlocking {
             viewModel.stopTimer()
-            Truth.assertThat(viewModel.appIsActive.get()).isFalse()
+            Truth.assertThat(viewModel.getAppIsActive()).isFalse()
         }
     }
 
