@@ -38,6 +38,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val nextDiagram = MutableLiveData<Diagram>()
     val pdfUrl = MutableLiveData<RemotePdf>()
     val networkResult = LiveEvent<NetworkResult>()
+    private val appIsActive = ObservableField<Boolean>(false)
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -60,8 +61,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             val nearSecond = nearDiagram.second
             if (nearSecond != 0) nearSecond - sec else 0
         }
-
-    private val appIsActive = ObservableField<Boolean>(false)
 
     fun getCalendar() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -137,17 +136,17 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun getPdf() {
-        pdfUrl.value ?: try {
-            viewModelScope.launch {
+        pdfUrl.value ?: viewModelScope.launch {
+            try {
                 useCase.getPdfUrl()
                     .collect {
                         networkResult.call(NetworkResult.Success)
                         pdfUrl.postValue(it)
                     }
+            } catch (e: Exception) {
+                networkResult.call(NetworkResult.Error)
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            networkResult.call(NetworkResult.Error)
-            e.printStackTrace()
         }
     }
 
@@ -161,4 +160,11 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             }
         }
     }
+
+    fun getOldDate(): String? = oldDate.value
+    fun setOldDate(old: String?) {
+        oldDate.postValue(old)
+    }
+
+    fun getAppIsActive(): Boolean? = appIsActive.get()
 }
