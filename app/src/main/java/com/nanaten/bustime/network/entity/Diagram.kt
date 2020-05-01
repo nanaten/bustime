@@ -18,7 +18,8 @@ class Diagram(
     var isKaizu: Boolean = false,
     val arrivalHour: Int,
     val arrivalMinute: Int,
-    val arrivalSecond: Int
+    val arrivalSecond: Int,
+    var setAlarm: Boolean = false
 ) : Parcelable {
 
     companion object DiagramFactory : Translator<DiagramEntity, Diagram> {
