@@ -5,6 +5,11 @@
 
 package com.nanaten.bustime.ui.viewmodel
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,6 +21,7 @@ import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
+import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
 import kotlinx.coroutines.delay
@@ -159,6 +165,48 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                 diagrams.postValue(toStationDiagrams.value)
             }
         }
+    }
+
+    fun showRemindDialog(context: Context, diagram: Diagram) {
+        val dialog = AlertDialog.Builder(context).create()
+        dialog.setTitle("リマインダー設定")
+        dialog.setMessage(
+            String.format(
+                "%02d:%02dのバスにリマインダーを設定しますか？\n" +
+                        "(5分前に通知が来ます)", diagram.hour, diagram.minute
+            )
+        )
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+            setAlarm(context, diagram)
+        }
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "キャンセル") { _, _ -> dialog.dismiss() }
+        dialog.show()
+    }
+
+    private fun setAlarm(context: Context, diagram: Diagram) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = getTodayZeroTimeCalendar()
+        calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
+        val intent = Intent(context.applicationContext, AlarmReceiver::class.java)
+        intent.putExtra("Time", String.format("%02d:%02d", diagram.hour, diagram.minute))
+        val pendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, intent, 0)
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
+            pendingIntent
+        )
+    }
+
+    private fun getTodayZeroTimeCalendar(): java.util.Calendar {
+        val cal = java.util.Calendar.getInstance()
+        cal.set(
+            cal.get(java.util.Calendar.YEAR),
+            cal.get(java.util.Calendar.MONTH),
+            cal.get(java.util.Calendar.DAY_OF_MONTH),
+            0,
+            0,
+            0
+        )
+        return cal
     }
 
     fun getOldDate(): String? = oldDate.value
