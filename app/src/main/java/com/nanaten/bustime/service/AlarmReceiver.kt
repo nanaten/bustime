@@ -14,6 +14,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.nanaten.bustime.BuildConfig
 import com.nanaten.bustime.R
 import com.nanaten.bustime.ui.MainActivity
@@ -31,7 +32,8 @@ class AlarmReceiver : BroadcastReceiver() {
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     val pendingIntent =
                         PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_ONE_SHOT)
-                    setSmallIcon(R.drawable.ic_launcher_foreground)
+                    setSmallIcon(R.drawable.ic_notification)
+                    color = ContextCompat.getColor(context, R.color.colorPrimary)
                     setContentTitle("リマインダー")
                     setContentText("もうすぐバスの発車時刻です: $time")
                     setAutoCancel(true)
