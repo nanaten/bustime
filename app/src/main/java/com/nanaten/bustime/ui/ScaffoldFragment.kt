@@ -54,15 +54,11 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
             getDiagrams()
         })
 
-        if (binding.viewPager.currentItem == HomeTabs.TO_COLLAGE.value) {
-            mViewModel.toCollegeDiagrams.observe(viewLifecycleOwner, Observer {
-                mViewModel.switchPosition(binding.viewPager.currentItem)
-            })
-        } else {
-            mViewModel.toStationDiagrams.observe(viewLifecycleOwner, Observer {
-                mViewModel.switchPosition(binding.viewPager.currentItem)
-            })
-        }
+        // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
+        mViewModel.toStationDiagrams.observe(viewLifecycleOwner, Observer {
+            mViewModel.initAlarmStatus(requireContext())
+            mViewModel.switchPosition(binding.viewPager.currentItem)
+        })
         return binding.root
     }
 
