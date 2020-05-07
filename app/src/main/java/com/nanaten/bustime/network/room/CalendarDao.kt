@@ -5,7 +5,10 @@
 
 package com.nanaten.bustime.network.room
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.nanaten.bustime.network.entity.CalendarEntity
 
 @Dao
@@ -13,9 +16,9 @@ interface CalendarDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCalendar(calendar: CalendarEntity)
 
-    @Query("SELECT 1 FROM CalendarEntity")
-    fun getCalendar(): CalendarEntity
+    @Query("SELECT 1 FROM CalendarEntity WHERE date = :date")
+    fun getCalendar(date: String): CalendarEntity?
 
-    @Delete
-    fun deleteCalendar(calendar: CalendarEntity)
+    @Query("DELETE FROM CalendarEntity")
+    fun deleteCalendar()
 }

@@ -5,7 +5,6 @@
 
 package com.nanaten.bustime.network.room
 
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.nanaten.bustime.network.entity.DiagramEntity
@@ -14,9 +13,9 @@ interface DiagramDao {
     @Insert
     fun addDiagram(diagram: DiagramEntity)
 
-    @Query("SELECT * FROM DiagramEntity")
-    fun getDiagrams(): List<DiagramEntity>
+    @Query("SELECT * FROM DiagramEntity WHERE type = :type")
+    fun getDiagrams(type: Int): List<DiagramEntity>
 
-    @Delete
-    fun deleteDiagram(diagramEntity: DiagramEntity)
+    @Query("DELETE FROM DiagramEntity")
+    fun deleteDiagramAll()
 }

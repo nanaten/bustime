@@ -13,4 +13,5 @@ import com.nanaten.bustime.network.entity.DiagramEntity
 @Database(entities = arrayOf(CalendarEntity::class, DiagramEntity::class), version = 1)
 abstract class DiagramDatabase : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
+    abstract fun diagramDao(): DiagramDao
 }
