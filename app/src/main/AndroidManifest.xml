@@ -20,6 +20,9 @@
         <receiver
             android:name=".service.AlarmReceiver"
             android:process=":remote" />
+        <activity
+            android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
