@@ -56,7 +56,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
 
         // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
         mViewModel.toStationDiagrams.observe(viewLifecycleOwner, Observer {
-            mViewModel.initAlarmStatus(requireContext())
             mViewModel.switchPosition(binding.viewPager.currentItem)
         })
         return binding.root
