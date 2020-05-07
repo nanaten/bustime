@@ -5,10 +5,12 @@
 
 package com.nanaten.bustime.network.room
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.nanaten.bustime.network.entity.DiagramEntity
 
+@Dao
 interface DiagramDao {
     @Insert
     fun addDiagram(diagram: DiagramEntity)

@@ -16,8 +16,8 @@ interface CalendarDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCalendar(calendar: CalendarEntity)
 
-    @Query("SELECT 1 FROM CalendarEntity WHERE date = :date")
-    fun getCalendar(date: String): CalendarEntity?
+    @Query("SELECT * FROM CalendarEntity WHERE date = :date")
+    fun getCalendar(date: String): List<CalendarEntity>
 
     @Query("DELETE FROM CalendarEntity")
     fun deleteCalendar()
