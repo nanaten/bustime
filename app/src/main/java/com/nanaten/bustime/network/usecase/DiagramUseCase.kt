@@ -11,9 +11,11 @@ import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.repository.DiagramRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface DiagramUseCase {
@@ -24,7 +26,8 @@ interface DiagramUseCase {
     ): Flow<Pair<List<Diagram>, List<Diagram>>>
 
     suspend fun getPdfUrl(): Flow<RemotePdf>
-    suspend fun saveAlarm(alarm: AlarmEntity)
+    suspend fun saveAlarm(diagram: Diagram)
+    suspend fun deleteAlarm()
 }
 
 
@@ -73,7 +76,16 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
             }
     }
 
-    override suspend fun saveAlarm(alarm: AlarmEntity) {
-        repository.saveAlarm(alarm)
+    override suspend fun saveAlarm(diagram: Diagram) {
+        withContext(Dispatchers.Default) {
+            val diagramEntity = Diagram.convertToEntity(diagram)
+            repository.saveDiagram(diagramEntity)
+            val alarm = AlarmEntity.setFromDiagram(diagram)
+            repository.saveAlarm(alarm)
+        }
+    }
+
+    override suspend fun deleteAlarm() {
+        repository.deleteAlarm()
     }
 }

@@ -38,6 +38,8 @@ interface DiagramRepository {
     suspend fun getAlarm(): AlarmEntity?
     suspend fun getCalendarFromCache(): CalendarEntity?
     suspend fun getDiagramsFromCache(): List<DiagramEntity>
+    suspend fun deleteAlarm()
+    suspend fun saveDiagram(diagram: DiagramEntity)
 }
 
 @ExperimentalCoroutinesApi
@@ -134,11 +136,9 @@ class DiagramRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveAlarm(alarm: AlarmEntity) {
-        withContext(Dispatchers.Default) {
-            db.withTransaction {
-                db.alarmDao().delete()
-                db.alarmDao().addAlarm(alarm)
-            }
+        db.withTransaction {
+            db.alarmDao().delete()
+            db.alarmDao().addAlarm(alarm)
         }
     }
 
@@ -155,5 +155,20 @@ class DiagramRepositoryImpl @Inject constructor(
 
     override suspend fun getDiagramsFromCache(): List<DiagramEntity> {
         return db.diagramDao().getDiagramsAll()
+    }
+
+    override suspend fun deleteAlarm() {
+        withContext(Dispatchers.Default) {
+            db.withTransaction {
+                db.alarmDao().delete()
+            }
+        }
+    }
+
+    override suspend fun saveDiagram(diagram: DiagramEntity) {
+        db.withTransaction {
+            db.diagramDao().setAlarmAll(false)
+            db.diagramDao().addDiagram(diagram)
+        }
     }
 }
