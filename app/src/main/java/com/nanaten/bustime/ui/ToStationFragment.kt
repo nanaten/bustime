@@ -96,7 +96,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
     }
 
     private fun getDiagramsClearCache() {
-        mViewModel.getDiagrams(false)
+        mViewModel.getDiagrams(requireContext(), false)
     }
 
     override fun onItemClick(index: Int, view: View) {

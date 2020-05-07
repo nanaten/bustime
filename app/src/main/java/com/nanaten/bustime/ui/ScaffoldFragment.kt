@@ -51,6 +51,7 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
         binding.viewPager.currentItem = page
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+            mViewModel.checkAlarm(requireContext())
             getDiagrams()
         })
 
@@ -87,6 +88,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     }
 
     private fun getDiagrams() {
-        mViewModel.getDiagrams()
+        mViewModel.getDiagrams(requireContext())
     }
 }

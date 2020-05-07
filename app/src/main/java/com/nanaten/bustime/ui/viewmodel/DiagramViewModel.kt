@@ -15,9 +15,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
-import com.nanaten.bustime.network.entity.*
 import com.nanaten.bustime.network.entity.Calendar
+import com.nanaten.bustime.network.entity.Diagram
+import com.nanaten.bustime.network.entity.NetworkResult
+import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
@@ -35,7 +38,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val toCollegeDiagrams = MutableLiveData<List<Diagram>>()
     val toStationDiagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
-    private val lastUpdated = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
@@ -67,12 +69,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
 
     fun getCalendar() {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        // 既にカレンダー取得済みならreturnする
-        if (calendar.value != null && calendar.value?.date == today) {
-            calendar.postValue(calendar.value)
-            return
-        }
         viewModelScope.launch {
             try {
                 val cal = useCase.getTodayCalendar()
@@ -87,9 +83,9 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getDiagrams(cache: Boolean = true) {
+    fun getDiagrams(context: Context, isCache: Boolean = true) {
         isLoading.postValue(true)
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val lastUpdated = SharedPref(context).getLastUpdated()
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
@@ -99,12 +95,14 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     isLoading.postValue(false)
                     return@launch
                 }
+                // Diagramの最終更新が今日でない場合は強制的にキャッシュクリア
+                val cache = if (isToday(lastUpdated)) isCache else false
                 val list = useCase.getDiagrams(diagram, cache)
                 list.collect {
                     toCollegeDiagrams.postValue(it.first)
                     toStationDiagrams.postValue(it.second)
                 }
-                lastUpdated.postValue(today)
+                SharedPref(context).setLastUpdated()
                 networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
                 networkResult.call(NetworkResult.Error)
@@ -161,12 +159,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getOldDate(): String? = lastUpdated.value
-    fun setOldDate(old: String?) {
-        lastUpdated.postValue(old)
-    }
-
-
     fun showRemindDialog(context: Context, diagram: Diagram) {
         val dialog = AlertDialog.Builder(context).create()
         dialog.setTitle("リマインダー設定")
@@ -177,6 +169,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             )
         )
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+            diagram.setAlarm = true
             setAlarm(context, diagram)
         }
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "キャンセル") { _, _ -> dialog.dismiss() }
@@ -184,7 +177,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     private fun setAlarm(context: Context, diagram: Diagram) {
-        setAlarmStatus(diagram)
+        saveAlarmStatus(context, diagram)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendar = getTodayZeroTimeCalendar()
         calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
@@ -211,28 +204,27 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     // アラームの状態をViewに反映する
-    private fun setAlarmStatus(diagram: Diagram) {
-        when (diagram.type) {
-            HomeTabs.TO_STATION.value -> {
-                toStationDiagrams.value?.first { it.second == diagram.second }?.setAlarm = true
-                toStationDiagrams.value?.filter { it.second != diagram.second }
-                    ?.map { it.setAlarm = false }
-                toCollegeDiagrams.value?.map { it.setAlarm = false }
-                diagrams.postValue(toStationDiagrams.value)
-            }
-            else -> {
-                toCollegeDiagrams.value?.first { it.second == diagram.second }?.setAlarm = true
-                toCollegeDiagrams.value?.filter { it.second != diagram.second }
-                    ?.map { it.setAlarm = false }
-                toStationDiagrams.value?.map { it.setAlarm = false }
-                diagrams.postValue(toCollegeDiagrams.value)
-            }
-        }
+    private fun saveAlarmStatus(context: Context, diagram: Diagram) {
         viewModelScope.launch {
-            val alarm = AlarmEntity.setFromDiagram(diagram)
-            useCase.saveAlarm(alarm)
+            useCase.saveAlarm(diagram)
+            getDiagrams(context, true)
+        }
+    }
+
+    fun checkAlarm(context: Context) {
+        viewModelScope.launch {
+            val lastUpdated = SharedPref(context).getLastUpdated()
+            // 最終更新が今日でない場合はアラームをクリア
+            if (!isToday(lastUpdated)) {
+                useCase.deleteAlarm()
+            }
         }
     }
 
     fun getAppIsActive(): Boolean? = appIsActive.get()
+
+    private fun isToday(date: String): Boolean {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        return date == today
+    }
 }
