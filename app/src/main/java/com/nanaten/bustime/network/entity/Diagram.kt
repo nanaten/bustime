@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class Diagram(
+    val id: Int,
     val hour: Int,
     val minute: Int,
     val second: Int,
@@ -25,6 +26,7 @@ class Diagram(
     companion object DiagramFactory : Translator<DiagramEntity, Diagram> {
         override fun convertFrom(entity: DiagramEntity): Diagram {
             return Diagram(
+                entity.id,
                 entity.hour,
                 entity.minute,
                 entity.second,

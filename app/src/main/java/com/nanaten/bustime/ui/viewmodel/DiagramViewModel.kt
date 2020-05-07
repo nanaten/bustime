@@ -38,7 +38,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val toCollegeDiagrams = MutableLiveData<List<Diagram>>()
     val toStationDiagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
-    private val oldDate = MutableLiveData<String>()
+    private val lastUpdated = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
@@ -71,12 +71,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
 
     fun getCalendar() {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        // 既にカレンダー取得済みならreturnする
-        if (calendar.value != null && calendar.value?.date == today) {
-            calendar.postValue(calendar.value)
-            return
-        }
         viewModelScope.launch {
             try {
                 val cal = useCase.getTodayCalendar()
@@ -91,10 +85,10 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getDiagrams() {
+    fun getDiagrams(cache: Boolean = true) {
         isLoading.postValue(true)
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        if (oldDate.value == today) {
+        if (lastUpdated.value == today) {
             diagrams.postValue(diagrams.value)
             isLoading.postValue(false)
             return
@@ -103,16 +97,17 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             try {
                 val diagram = calendar.value?.diagram
                 val isSuspend = calendar.value?.isSuspend ?: false
+                // 運休かどうか判定
                 if (diagram == null || isSuspend) {
                     isLoading.postValue(false)
                     return@launch
                 }
-                val list = useCase.getDiagrams(diagram)
+                val list = useCase.getDiagrams(diagram, cache)
                 list.collect {
                     toCollegeDiagrams.postValue(it.first)
                     toStationDiagrams.postValue(it.second)
                 }
-                oldDate.postValue(today)
+                lastUpdated.postValue(today)
                 networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
                 networkResult.call(NetworkResult.Error)
@@ -169,6 +164,12 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             }
         }
     }
+
+    fun getOldDate(): String? = lastUpdated.value
+    fun setOldDate(old: String?) {
+        lastUpdated.postValue(old)
+    }
+
 
     fun showRemindDialog(context: Context, diagram: Diagram) {
         val dialog = AlertDialog.Builder(context).create()
@@ -252,7 +253,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
 
     fun getOldDate(): String? = oldDate.value
     fun setOldDate(old: String?) {
-        oldDate.postValue(old)
+        lastUpdated.postValue(old)
     }
 
     fun getAppIsActive(): Boolean? = appIsActive.get()
