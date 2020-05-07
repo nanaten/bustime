@@ -15,12 +15,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
+import com.nanaten.bustime.network.entity.*
 import com.nanaten.bustime.network.entity.Calendar
-import com.nanaten.bustime.network.entity.Diagram
-import com.nanaten.bustime.network.entity.NetworkResult
-import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
@@ -46,7 +43,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val pdfUrl = MutableLiveData<RemotePdf>()
     val networkResult = LiveEvent<NetworkResult>()
     private val appIsActive = ObservableField<Boolean>(false)
-    val position = MutableLiveData<Int>()
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -71,6 +67,12 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
 
     fun getCalendar() {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        // 既にカレンダー取得済みならreturnする
+        if (calendar.value != null && calendar.value?.date == today) {
+            calendar.postValue(calendar.value)
+            return
+        }
         viewModelScope.launch {
             try {
                 val cal = useCase.getTodayCalendar()
@@ -88,11 +90,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     fun getDiagrams(cache: Boolean = true) {
         isLoading.postValue(true)
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        if (lastUpdated.value == today) {
-            diagrams.postValue(diagrams.value)
-            isLoading.postValue(false)
-            return
-        }
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
@@ -154,7 +151,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun switchPosition(position: Int) {
-        this.position.postValue(position)
         when (position) {
             HomeTabs.TO_COLLAGE.value -> {
                 diagrams.postValue(toCollegeDiagrams.value)
@@ -199,8 +195,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
             pendingIntent
         )
-        SharedPref(context).setAlarmSec(position.value ?: 0, diagram.second)
-        setAlarmStatus(diagram)
     }
 
     private fun getTodayZeroTimeCalendar(): java.util.Calendar {
@@ -217,37 +211,26 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     // アラームの状態をViewに反映する
-    // TODO: 現状日付を跨いだ時の処理が出来ていない。Roomでキャッシュを取るようにする
     private fun setAlarmStatus(diagram: Diagram) {
-        when (position.value) {
+        when (diagram.type) {
             HomeTabs.TO_STATION.value -> {
-                toStationDiagrams.value?.find { it.second == diagram.second }?.setAlarm = true
+                toStationDiagrams.value?.first { it.second == diagram.second }?.setAlarm = true
                 toStationDiagrams.value?.filter { it.second != diagram.second }
                     ?.map { it.setAlarm = false }
                 toCollegeDiagrams.value?.map { it.setAlarm = false }
-                diagrams.postValue(
-                    toStationDiagrams.value
-                )
+                diagrams.postValue(toStationDiagrams.value)
             }
             else -> {
-                toCollegeDiagrams.value?.find { it.second == diagram.second }?.setAlarm = true
+                toCollegeDiagrams.value?.first { it.second == diagram.second }?.setAlarm = true
                 toCollegeDiagrams.value?.filter { it.second != diagram.second }
                     ?.map { it.setAlarm = false }
                 toStationDiagrams.value?.map { it.setAlarm = false }
                 diagrams.postValue(toCollegeDiagrams.value)
             }
         }
-    }
-
-    fun initAlarmStatus(context: Context) {
-        val second = SharedPref(context).getAlarmSec()
-        when (SharedPref(context).getAlarmPos()) {
-            HomeTabs.TO_STATION.value -> {
-                toStationDiagrams.value?.find { it.second == second }?.setAlarm = true
-            }
-            else -> {
-                toCollegeDiagrams.value?.find { it.second == second }?.setAlarm = true
-            }
+        viewModelScope.launch {
+            val alarm = AlarmEntity.setFromDiagram(diagram)
+            useCase.saveAlarm(alarm)
         }
     }
 
