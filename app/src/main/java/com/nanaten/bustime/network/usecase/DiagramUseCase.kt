@@ -21,7 +21,7 @@ interface DiagramUseCase {
     suspend fun getTodayCalendar(): Flow<Calendar>
     suspend fun getDiagrams(
         diagramName: String,
-        cache: Boolean = true
+        cache: Boolean
     ): Flow<Pair<List<Diagram>, List<Diagram>>>
 
     suspend fun getPdfUrl(): Flow<RemotePdf>
