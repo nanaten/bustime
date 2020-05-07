@@ -5,8 +5,8 @@
 
 package com.nanaten.bustime.network.usecase
 
-import com.nanaten.bustime.Const
 import com.nanaten.bustime.adapter.HomeTabs
+import com.nanaten.bustime.network.entity.AlarmEntity
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.RemotePdf
@@ -14,7 +14,6 @@ import com.nanaten.bustime.network.repository.DiagramRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 
 interface DiagramUseCase {
@@ -25,6 +24,7 @@ interface DiagramUseCase {
     ): Flow<Pair<List<Diagram>, List<Diagram>>>
 
     suspend fun getPdfUrl(): Flow<RemotePdf>
+    suspend fun saveAlarm(alarm: AlarmEntity)
 }
 
 
@@ -43,18 +43,18 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
         diagramName: String,
         cache: Boolean
     ): Flow<Pair<List<Diagram>, List<Diagram>>> {
-        return repository.getDiagrams(
-            "$diagramName${Const.TO_COL}",
-            HomeTabs.TO_COLLAGE.value,
-            cache
-        )
-            .zip(
-                repository.getDiagrams(
-                    "$diagramName${Const.TO_STA}",
-                    HomeTabs.TO_STATION.value,
-                    cache
-                )
-            ) { toCollege, toStation ->
+        return repository.getDiagrams(diagramName, cache)
+            .map { pair ->
+                val toCollege = pair.first
+                val toStation = pair.second
+                val alarm = repository.getAlarm()
+                // アラームがセット済みの場合
+                if (alarm != null) {
+                    if (alarm.type == HomeTabs.TO_COLLAGE.value)
+                        toCollege.firstOrNull { it.id == alarm.id }?.setAlarm = true
+                    else
+                        toStation.firstOrNull { it.id == alarm.id }?.setAlarm = true
+                }
                 Pair(
                     toCollege.map {
                         Diagram.convertFrom(it)
@@ -71,5 +71,9 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
             .map {
                 RemotePdf.convertFrom(it)
             }
+    }
+
+    override suspend fun saveAlarm(alarm: AlarmEntity) {
+        repository.saveAlarm(alarm)
     }
 }
