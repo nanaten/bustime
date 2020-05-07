@@ -251,10 +251,5 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getOldDate(): String? = oldDate.value
-    fun setOldDate(old: String?) {
-        lastUpdated.postValue(old)
-    }
-
     fun getAppIsActive(): Boolean? = appIsActive.get()
 }
