@@ -15,19 +15,21 @@ import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.network.usecase.DiagramUseCaseImpl
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 
 @Module
-internal object DiagramModule {
+class DiagramModule {
     @Singleton
     @Provides
-    fun provideRepository(context: App): DiagramRepository =
+    fun provideRepository(app: App): DiagramRepository =
         DiagramRepositoryImpl(
             FirebaseObserver(),
-            Room.databaseBuilder(context, DiagramDatabase::class.java, "diagram-database").build()
+            Room.databaseBuilder(app, DiagramDatabase::class.java, "diagram-database").build()
         )
 
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     fun provideUseCase(repository: DiagramRepository): DiagramUseCase =
