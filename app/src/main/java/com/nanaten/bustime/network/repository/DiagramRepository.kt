@@ -58,7 +58,12 @@ class DiagramRepositoryImpl @Inject constructor(
         cache: Boolean
     ): Flow<List<DiagramEntity>> {
         return if (cache) {
-            flowOf(getDiagramsFromCache(type))
+            if (getDiagramsFromCache(type).isNullOrEmpty()) {
+                firebaseObserver.getDiagrams(diagramName, type)
+                    .apply { saveDiagrams(this.single()) }
+            } else {
+                flowOf(getDiagramsFromCache(type))
+            }
         } else {
             firebaseObserver.getDiagrams(diagramName, type)
                 .apply { saveDiagrams(this.single()) }
@@ -78,34 +83,42 @@ class DiagramRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveCalendar(calendar: CalendarEntity): CalendarEntity {
-        db.withTransaction {
-            db.calendarDao().addCalendar(calendar)
+        return withContext(Dispatchers.IO) {
+            db.withTransaction {
+                db.calendarDao().addCalendar(calendar)
+            }
+            calendar
         }
-        return calendar
     }
 
     override suspend fun saveDiagrams(list: List<DiagramEntity>): List<DiagramEntity> {
-        db.withTransaction {
-            db.diagramDao().deleteDiagramAll()
-            list.forEach {
-                db.diagramDao().addDiagram(it)
+        return withContext(Dispatchers.IO) {
+            db.withTransaction {
+                db.diagramDao().deleteDiagramAll()
+                list.forEach {
+                    db.diagramDao().addDiagram(it)
+                }
             }
+            list
         }
-        return list
     }
 
     override suspend fun saveDiagram(diagram: DiagramEntity) {
-        db.withTransaction {
-            db.diagramDao().addDiagram(diagram)
+        withContext(Dispatchers.IO) {
+            db.withTransaction {
+                db.diagramDao().addDiagram(diagram)
+            }
         }
     }
 
     override suspend fun getCalendarFromCache(): CalendarEntity? {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        return db.calendarDao().getCalendar(today)
+        return withContext(Dispatchers.IO) {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            db.calendarDao().getCalendar(today).firstOrNull()
+        }
     }
 
     override suspend fun getDiagramsFromCache(type: Int): List<DiagramEntity> {
-        return db.diagramDao().getDiagrams(type)
+        return withContext(Dispatchers.IO) { db.diagramDao().getDiagrams(type) }
     }
 }
