@@ -6,6 +6,7 @@
 package com.nanaten.bustime.network.usecase
 
 import com.nanaten.bustime.Const
+import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.RemotePdf
@@ -18,10 +19,16 @@ import javax.inject.Inject
 
 interface DiagramUseCase {
     suspend fun getTodayCalendar(): Flow<Calendar>
-    suspend fun getDiagrams(diagramName: String): Flow<Pair<List<Diagram>, List<Diagram>>>
+    suspend fun getDiagrams(
+        diagramName: String,
+        cache: Boolean
+    ): Flow<Pair<List<Diagram>, List<Diagram>>>
+
     suspend fun getPdfUrl(): Flow<RemotePdf>
 }
 
+
+@ExperimentalCoroutinesApi
 class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepository) :
     DiagramUseCase {
     override suspend fun getTodayCalendar(): Flow<Calendar> {
@@ -32,9 +39,22 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getDiagrams(diagramName: String): Flow<Pair<List<Diagram>, List<Diagram>>> {
-        return repository.getDiagrams("$diagramName${Const.TO_COL}")
-            .zip(repository.getDiagrams("$diagramName${Const.TO_STA}")) { toCollege, toStation ->
+    override suspend fun getDiagrams(
+        diagramName: String,
+        cache: Boolean
+    ): Flow<Pair<List<Diagram>, List<Diagram>>> {
+        return repository.getDiagrams(
+            "$diagramName${Const.TO_COL}",
+            HomeTabs.TO_COLLAGE.value,
+            cache
+        )
+            .zip(
+                repository.getDiagrams(
+                    "$diagramName${Const.TO_STA}",
+                    HomeTabs.TO_STATION.value,
+                    cache
+                )
+            ) { toCollege, toStation ->
                 Pair(
                     toCollege.map {
                         Diagram.convertFrom(it)

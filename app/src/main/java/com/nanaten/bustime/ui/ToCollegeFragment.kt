@@ -62,7 +62,7 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
             swipeLayout.setOnRefreshListener {
-                getDiagrams()
+                getDiagramsClearCache()
             }
         }
 
@@ -90,8 +90,8 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
         return binding.root
     }
 
-    private fun getDiagrams() {
-        mViewModel.getDiagrams()
+    private fun getDiagramsClearCache() {
+        mViewModel.getDiagrams(false)
     }
 
     override fun onItemClick(index: Int, view: View) {
