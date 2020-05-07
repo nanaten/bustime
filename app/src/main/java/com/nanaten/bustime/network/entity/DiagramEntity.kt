@@ -7,9 +7,14 @@ package com.nanaten.bustime.network.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity
 class DiagramEntity(
+    @PrimaryKey
+    var id: Int = 1,
+    // type 0 = toStation, 1 = toCollege
+    var type: Int = 0,
     var hour: Int = 0,
     var minute: Int = 0,
     var second: Int = 0,
