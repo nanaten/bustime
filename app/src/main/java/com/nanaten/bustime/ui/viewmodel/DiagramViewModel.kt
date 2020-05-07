@@ -183,7 +183,12 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
         val intent = Intent(context.applicationContext, AlarmReceiver::class.java)
         intent.putExtra("Time", String.format("%02d:%02d", diagram.hour, diagram.minute))
-        val pendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context.applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         alarmManager.setAlarmClock(
             AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
             pendingIntent
