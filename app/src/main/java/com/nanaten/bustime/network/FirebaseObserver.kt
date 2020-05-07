@@ -56,10 +56,10 @@ class FirebaseObserver {
                     .addOnSuccessListener { querySnapShot ->
                         val diagrams =
                             querySnapShot.documents.mapNotNull { it.toObject(DiagramEntity::class.java) }
-                                .map {
-                                    it.id = it.hashCode()
-                                    it.type = type
-                                    it
+                                .mapIndexed { i, diagram ->
+                                    diagram.id = (i + 1) + (type * 1000)
+                                    diagram.type = type
+                                    diagram
                                 }
                         cont.resume(diagrams)
                     }
