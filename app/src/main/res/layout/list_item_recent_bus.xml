@@ -25,7 +25,7 @@
             android:id="@+id/order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginStart="@dimen/middle_margin"
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
             android:text=""
@@ -40,7 +40,7 @@
             android:id="@+id/start_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginStart="@dimen/middle_margin"
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
             android:orientation="vertical"
@@ -65,16 +65,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_alarm"
-            android:layout_marginStart="@dimen/default_margin"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/start_layout"
-            android:visibility="@{item.setAlarm ? View.VISIBLE : View.GONE }"
-            tools:ignore="ContentDescription" />
 
         <ImageView
             android:layout_width="@dimen/icon_size"
@@ -92,11 +82,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/wide_margin"
+            android:layout_marginEnd="@dimen/default_margin"
+            app:layout_goneMarginEnd="64dp"
             android:layout_marginBottom="@dimen/default_margin"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/alarm"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -115,5 +106,17 @@
                 android:textSize="@dimen/text_size_mid"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/alarm"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_alarm"
+            android:layout_marginEnd="@dimen/middle_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{item.setAlarm ? View.VISIBLE : View.GONE }"
+            tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

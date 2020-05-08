@@ -54,9 +54,9 @@ class DiagramUseCaseImpl @Inject constructor(private val repository: DiagramRepo
                 // アラームがセット済みの場合
                 if (alarm != null) {
                     if (alarm.type == HomeTabs.TO_COLLAGE.value)
-                        toCollege.firstOrNull { it.id == alarm.id }?.setAlarm = true
+                        toCollege.firstOrNull { it.id == alarm.id }?.setAlarm = alarm.setAlarm
                     else
-                        toStation.firstOrNull { it.id == alarm.id }?.setAlarm = true
+                        toStation.firstOrNull { it.id == alarm.id }?.setAlarm = alarm.setAlarm
                 }
                 Pair(
                     toCollege.map {

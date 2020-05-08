@@ -20,7 +20,7 @@ data class AlarmEntity(
 ) {
     companion object {
         fun setFromDiagram(diagram: Diagram): AlarmEntity {
-            return AlarmEntity(diagram.id, diagram.type, diagram.second, true)
+            return AlarmEntity(diagram.id, diagram.type, diagram.second, diagram.setAlarm)
         }
     }
 }
