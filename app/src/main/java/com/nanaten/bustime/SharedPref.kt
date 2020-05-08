@@ -6,12 +6,15 @@
 package com.nanaten.bustime
 
 import android.content.Context
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SharedPref(context: Context) {
     companion object {
         const val SHARED_PREFERENCES_KEY = "BUSTIME_SHARED_PREFERENCES"
         const val FIRST_VIEW = "FIRST_VIEW"
         const val DARK_MODE = "DARK_MODE"
+        const val LAST_UPDATED = "LAST_UPDATED"
     }
 
     private val sharedPreferences =
@@ -36,6 +39,18 @@ class SharedPref(context: Context) {
     fun setIsDarkMode(isDarkMode: Boolean) {
         sharedPreferences.edit()
             .putBoolean(DARK_MODE, isDarkMode)
+            .apply()
+    }
+
+    // 最終更新日
+    fun getLastUpdated(): String {
+        return sharedPreferences.getString(LAST_UPDATED, "") ?: ""
+    }
+
+    fun setLastUpdated() {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        sharedPreferences.edit()
+            .putString(LAST_UPDATED, today)
             .apply()
     }
 }

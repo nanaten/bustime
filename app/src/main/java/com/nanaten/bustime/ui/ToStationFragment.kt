@@ -18,6 +18,7 @@ import com.nanaten.bustime.adapter.DiagramAdapter
 import com.nanaten.bustime.adapter.ItemClickListener
 import com.nanaten.bustime.databinding.FragmentToStationBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
+import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
@@ -66,7 +67,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
             swipeLayout.setOnRefreshListener {
-                getDiagrams()
+                getDiagramsClearCache()
             }
         }
 
@@ -94,8 +95,8 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         return binding.root
     }
 
-    private fun getDiagrams() {
-        mViewModel.getDiagrams()
+    private fun getDiagramsClearCache() {
+        mViewModel.getDiagrams(requireContext(), false)
     }
 
     override fun onItemClick(index: Int, view: View) {
@@ -115,6 +116,10 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
                         .build()
                         .launchUrl(view.context, Uri.parse(it))
                 } ?: showToast(getString(R.string.network_error_message))
+            }
+            is Diagram -> {
+                val diagram = view.tag as Diagram
+                mViewModel.showRemindDialog(requireContext(), diagram)
             }
             else -> return
         }

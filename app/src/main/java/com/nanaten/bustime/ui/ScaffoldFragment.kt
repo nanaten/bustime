@@ -51,10 +51,12 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
         binding.viewPager.currentItem = page
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+            mViewModel.checkAlarm(requireContext())
             getDiagrams()
         })
 
-        mViewModel.toCollegeDiagrams.observe(viewLifecycleOwner, Observer {
+        // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
+        mViewModel.toStationDiagrams.observe(viewLifecycleOwner, Observer {
             mViewModel.switchPosition(binding.viewPager.currentItem)
         })
         return binding.root
@@ -86,6 +88,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     }
 
     private fun getDiagrams() {
-        mViewModel.getDiagrams()
+        mViewModel.getDiagrams(requireContext())
     }
 }

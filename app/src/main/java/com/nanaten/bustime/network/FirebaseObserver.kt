@@ -47,7 +47,7 @@ class FirebaseObserver {
         }
     }
 
-    suspend fun getDiagrams(diagramName: String): Flow<List<DiagramEntity>> {
+    suspend fun getDiagrams(diagramName: String, type: Int): Flow<List<DiagramEntity>> {
         return flow {
             emit(suspendCoroutine<List<DiagramEntity>> { cont ->
                 firestore.collection(diagramName)
@@ -56,6 +56,11 @@ class FirebaseObserver {
                     .addOnSuccessListener { querySnapShot ->
                         val diagrams =
                             querySnapShot.documents.mapNotNull { it.toObject(DiagramEntity::class.java) }
+                                .mapIndexed { i, diagram ->
+                                    diagram.id = (i + 1) + (type * 1000)
+                                    diagram.type = type
+                                    diagram
+                                }
                         cont.resume(diagrams)
                     }
                     .addOnFailureListener {

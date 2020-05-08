@@ -85,6 +85,10 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
                 val index = holder.adapterPosition - 2
                 holder.bind(list[index])
                 holder.binding.order.text = "${index + 1}"
+                holder.itemView.setOnClickListener {
+                    it.tag = list[index]
+                    getItemClickListener().onItemClick(index, it)
+                }
             }
             else -> return
         }
