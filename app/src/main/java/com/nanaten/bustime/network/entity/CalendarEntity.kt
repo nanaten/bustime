@@ -18,5 +18,6 @@ class CalendarEntity(
     @ColumnInfo(name = "diagram_name")
     var diagramName: String = "",
     @ColumnInfo(name = "is_suspend")
+    @field:JvmField
     var isSuspend: Boolean = false
 )

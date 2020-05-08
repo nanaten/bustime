@@ -5,17 +5,24 @@
 
 package com.nanaten.bustime.ui.viewmodel
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
+import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
 import kotlinx.coroutines.delay
@@ -31,7 +38,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val toCollegeDiagrams = MutableLiveData<List<Diagram>>()
     val toStationDiagrams = MutableLiveData<List<Diagram>>()
     val nowSecond = MutableLiveData<Long>(0L)
-    private val lastUpdated = MutableLiveData<String>()
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
     val isLoading = MutableLiveData<Boolean>(false)
@@ -77,14 +83,9 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getDiagrams(cache: Boolean = true) {
+    fun getDiagrams(context: Context, isCache: Boolean = true) {
         isLoading.postValue(true)
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        if (lastUpdated.value == today) {
-            diagrams.postValue(diagrams.value)
-            isLoading.postValue(false)
-            return
-        }
+        val lastUpdated = SharedPref(context).getLastUpdated()
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
@@ -94,12 +95,14 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     isLoading.postValue(false)
                     return@launch
                 }
+                // Diagramの最終更新が今日でない場合は強制的にキャッシュクリア
+                val cache = if (isToday(lastUpdated)) isCache else false
                 val list = useCase.getDiagrams(diagram, cache)
                 list.collect {
                     toCollegeDiagrams.postValue(it.first)
                     toStationDiagrams.postValue(it.second)
                 }
-                lastUpdated.postValue(today)
+                SharedPref(context).setLastUpdated()
                 networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
                 networkResult.call(NetworkResult.Error)
@@ -156,10 +159,77 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getOldDate(): String? = lastUpdated.value
-    fun setOldDate(old: String?) {
-        lastUpdated.postValue(old)
+    fun showRemindDialog(context: Context, diagram: Diagram) {
+        val dialog = AlertDialog.Builder(context).create()
+        dialog.setTitle("リマインダー設定")
+        dialog.setMessage(
+            String.format(
+                "%02d:%02dのバスにリマインダーを設定しますか？\n" +
+                        "(5分前に通知が来ます)", diagram.hour, diagram.minute
+            )
+        )
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+            diagram.setAlarm = true
+            setAlarm(context, diagram)
+        }
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "キャンセル") { _, _ -> dialog.dismiss() }
+        dialog.show()
+    }
+
+    private fun setAlarm(context: Context, diagram: Diagram) {
+        saveAlarmStatus(context, diagram)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = getTodayZeroTimeCalendar()
+        calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
+        val intent = Intent(context.applicationContext, AlarmReceiver::class.java)
+        intent.putExtra("Time", String.format("%02d:%02d", diagram.hour, diagram.minute))
+        val pendingIntent = PendingIntent.getBroadcast(
+            context.applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
+            pendingIntent
+        )
+    }
+
+    private fun getTodayZeroTimeCalendar(): java.util.Calendar {
+        val cal = java.util.Calendar.getInstance()
+        cal.set(
+            cal.get(java.util.Calendar.YEAR),
+            cal.get(java.util.Calendar.MONTH),
+            cal.get(java.util.Calendar.DAY_OF_MONTH),
+            0,
+            0,
+            0
+        )
+        return cal
+    }
+
+    // アラームの状態をViewに反映する
+    private fun saveAlarmStatus(context: Context, diagram: Diagram) {
+        viewModelScope.launch {
+            useCase.saveAlarm(diagram)
+            getDiagrams(context, true)
+        }
+    }
+
+    fun checkAlarm(context: Context) {
+        viewModelScope.launch {
+            val lastUpdated = SharedPref(context).getLastUpdated()
+            // 最終更新が今日でない場合はアラームをクリア
+            if (!isToday(lastUpdated)) {
+                useCase.deleteAlarm()
+            }
+        }
     }
 
     fun getAppIsActive(): Boolean? = appIsActive.get()
+
+    private fun isToday(date: String): Boolean {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        return date == today
+    }
 }

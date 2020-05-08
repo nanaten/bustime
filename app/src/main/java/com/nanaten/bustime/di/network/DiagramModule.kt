@@ -21,6 +21,7 @@ import javax.inject.Singleton
 
 @Module
 class DiagramModule {
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     fun provideRepository(app: App): DiagramRepository =
