@@ -161,15 +161,18 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
 
     fun showRemindDialog(context: Context, diagram: Diagram) {
         val dialog = AlertDialog.Builder(context).create()
-        dialog.setTitle("リマインダー設定")
-        dialog.setMessage(
+        val message = if (diagram.setAlarm) {
+            String.format("%02d:%02dのリマインダーを解除しますか？", diagram.hour, diagram.minute)
+        } else {
             String.format(
                 "%02d:%02dのバスにリマインダーを設定しますか？\n" +
                         "(5分前に通知が来ます)", diagram.hour, diagram.minute
             )
-        )
+        }
+        dialog.setTitle("リマインダー設定")
+        dialog.setMessage(message)
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-            diagram.setAlarm = true
+            diagram.setAlarm = !diagram.setAlarm
             setAlarm(context, diagram)
         }
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "キャンセル") { _, _ -> dialog.dismiss() }
@@ -179,8 +182,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     private fun setAlarm(context: Context, diagram: Diagram) {
         saveAlarmStatus(context, diagram)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val calendar = getTodayZeroTimeCalendar()
-        calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
         val intent = Intent(context.applicationContext, AlarmReceiver::class.java)
         intent.putExtra("Time", String.format("%02d:%02d", diagram.hour, diagram.minute))
         val pendingIntent = PendingIntent.getBroadcast(
@@ -189,10 +190,16 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        alarmManager.setAlarmClock(
-            AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
-            pendingIntent
-        )
+        if (diagram.setAlarm) {
+            val calendar = getTodayZeroTimeCalendar()
+            calendar.add(java.util.Calendar.SECOND, (diagram.second - 300)) // 到着時間の5分前にリマインダーをセット
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(calendar.timeInMillis, null),
+                pendingIntent
+            )
+        } else {
+            alarmManager.cancel(pendingIntent)
+        }
     }
 
     private fun getTodayZeroTimeCalendar(): java.util.Calendar {
