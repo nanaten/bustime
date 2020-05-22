@@ -83,9 +83,6 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
             mAdapter.updateTime()
         })
 
-        mViewModel.isLoading.observe(viewLifecycleOwner, Observer {
-            if (!it) binding.swipeLayout.isRefreshing = false
-        })
 
         mViewModel.networkResult.observe(viewLifecycleOwner, "networkResult", Observer {
             if (it is NetworkResult.Error) {
