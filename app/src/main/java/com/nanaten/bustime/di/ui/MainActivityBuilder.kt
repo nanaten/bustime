@@ -6,11 +6,14 @@
 package com.nanaten.bustime.di.ui
 
 import com.nanaten.bustime.di.ActivityScope
+import com.nanaten.bustime.di.SharedPreferencesModule
 import com.nanaten.bustime.ui.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Module
+@ExperimentalCoroutinesApi
 abstract class MainActivityBuilder {
     @ActivityScope
     @ContributesAndroidInjector(
@@ -18,7 +21,8 @@ abstract class MainActivityBuilder {
             ScaffoldFragmentModule::class,
             ToCollegeFragmentModule::class,
             ToStationFragmentModule::class,
-            SettingsFragmentModule::class
+            SettingsFragmentModule::class,
+            SharedPreferencesModule::class
         ]
     )
     abstract fun bindMainActivity(): MainActivity
