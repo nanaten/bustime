@@ -6,11 +6,13 @@
 package com.nanaten.bustime.di.ui
 
 import androidx.lifecycle.ViewModel
+import com.nanaten.bustime.di.viewmodel.ViewModelKey
 import com.nanaten.bustime.ui.SettingsFragment
 import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import dagger.multibindings.IntoMap
 
 
 @Module
@@ -18,6 +20,8 @@ import dagger.android.ContributesAndroidInjector
 internal abstract class SettingsFragmentModule {
 
     @Binds
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
     abstract fun bindViewModel(viewModel: SettingsViewModel): ViewModel
 
     @ContributesAndroidInjector
