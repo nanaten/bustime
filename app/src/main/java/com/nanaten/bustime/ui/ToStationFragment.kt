@@ -25,9 +25,11 @@ import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 
+@ExperimentalCoroutinesApi
 class ToStationFragment : DaggerFragment(), ItemClickListener {
 
     @Inject

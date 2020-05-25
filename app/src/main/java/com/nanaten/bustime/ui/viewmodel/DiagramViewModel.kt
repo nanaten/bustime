@@ -10,7 +10,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,18 +24,21 @@ import com.nanaten.bustime.network.usecase.DiagramUseCase
 import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) : ViewModel() {
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
-    val toCollegeDiagrams = MutableLiveData<List<Diagram>>()
-    val toStationDiagrams = MutableLiveData<List<Diagram>>()
+    val toCollegeDiagrams = MutableStateFlow<List<Diagram>>(emptyList())
+    val toStationDiagrams = MutableStateFlow<List<Diagram>>(emptyList())
     val nowSecond = MutableLiveData<Long>(0L)
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
@@ -44,7 +46,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val nextDiagram = MutableLiveData<Diagram>()
     val pdfUrl = MutableLiveData<RemotePdf>()
     val networkResult = LiveEvent<NetworkResult>()
-    private val appIsActive = ObservableField<Boolean>(false)
+    private val appIsActive = MutableStateFlow<Boolean>(false)
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -99,8 +101,8 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                 val cache = if (isToday(lastUpdated)) isCache else false
                 val list = useCase.getDiagrams(diagram, cache)
                 list.collect {
-                    toCollegeDiagrams.postValue(it.first)
-                    toStationDiagrams.postValue(it.second)
+                    toCollegeDiagrams.value = it.first
+                    toStationDiagrams.value = it.second
                 }
                 SharedPref(context).setLastUpdated()
                 networkResult.call(NetworkResult.Success)
@@ -112,10 +114,10 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun startTimer() {
-        if (appIsActive.get() == true) return
-        appIsActive.set(true)
+        if (appIsActive.value) return
+        appIsActive.value = true
         viewModelScope.launch {
-            while (appIsActive.get() == true) {
+            while (appIsActive.value) {
                 val cal = java.util.Calendar.getInstance()
                 val now = (
                         cal.get(java.util.Calendar.HOUR_OF_DAY) * 3600
@@ -129,8 +131,8 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     fun stopTimer() {
-        if (appIsActive.get() != true) return
-        appIsActive.set(false)
+        if (!appIsActive.value) return
+        appIsActive.value = false
     }
 
     fun getPdf() {
@@ -233,7 +235,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getAppIsActive(): Boolean? = appIsActive.get()
+    fun getAppIsActive(): Boolean = appIsActive.value
 
     private fun isToday(date: String): Boolean {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

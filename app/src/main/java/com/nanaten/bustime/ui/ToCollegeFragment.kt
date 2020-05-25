@@ -25,9 +25,10 @@ import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-
+@ExperimentalCoroutinesApi
 class ToCollegeFragment : DaggerFragment(), ItemClickListener {
 
     @Inject
@@ -78,7 +79,7 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
         mViewModel.next.observe(viewLifecycleOwner, Observer {
             mAdapter.updateTime()
         })
-        
+
 
         mViewModel.networkResult.observe(viewLifecycleOwner, "networkResult", Observer {
             if (it is NetworkResult.Error) {
