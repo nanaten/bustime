@@ -48,6 +48,9 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val networkResult = LiveEvent<NetworkResult>()
     private val appIsActive = MutableStateFlow<Boolean>(false)
 
+    @Inject
+    lateinit var sharedPref: SharedPref
+
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
      * nowSecond: 現在の時間(sec)
@@ -85,9 +88,9 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
         }
     }
 
-    fun getDiagrams(context: Context, isCache: Boolean = true) {
+    fun getDiagrams(isCache: Boolean = true) {
         isLoading.postValue(true)
-        val lastUpdated = SharedPref(context).getLastUpdated()
+        val lastUpdated = sharedPref.getLastUpdated()
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
@@ -104,7 +107,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     toCollegeDiagrams.value = it.first
                     toStationDiagrams.value = it.second
                 }
-                SharedPref(context).setLastUpdated()
+                sharedPref.setLastUpdated()
                 networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
                 networkResult.call(NetworkResult.Error)
@@ -182,7 +185,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     private fun setAlarm(context: Context, diagram: Diagram) {
-        saveAlarmStatus(context, diagram)
+        saveAlarmStatus(diagram)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context.applicationContext, AlarmReceiver::class.java)
         intent.putExtra("Time", String.format("%02d:%02d", diagram.hour, diagram.minute))
@@ -218,16 +221,16 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     }
 
     // アラームの状態をViewに反映する
-    private fun saveAlarmStatus(context: Context, diagram: Diagram) {
+    private fun saveAlarmStatus(diagram: Diagram) {
         viewModelScope.launch {
             useCase.saveAlarm(diagram)
-            getDiagrams(context, true)
+            getDiagrams(true)
         }
     }
 
-    fun checkAlarm(context: Context) {
+    fun checkAlarm() {
         viewModelScope.launch {
-            val lastUpdated = SharedPref(context).getLastUpdated()
+            val lastUpdated = sharedPref.getLastUpdated()
             // 最終更新が今日でない場合はアラームをクリア
             if (!isToday(lastUpdated)) {
                 useCase.deleteAlarm()

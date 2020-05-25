@@ -11,8 +11,12 @@ import com.nanaten.bustime.BuildConfig
 import com.nanaten.bustime.R
 import com.nanaten.bustime.SharedPref
 import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
+
+    @Inject
+    lateinit var sharedPref: SharedPref
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +36,7 @@ class MainActivity : DaggerAppCompatActivity() {
             channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)
         }
-        if (SharedPref(this).getIsDarkMode()) {
+        if (sharedPref.getIsDarkMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

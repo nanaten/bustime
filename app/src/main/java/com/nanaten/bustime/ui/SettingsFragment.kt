@@ -17,16 +17,21 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
+import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
 import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 
 class SettingsFragment : DaggerFragment() {
 
     private var binding: FragmentSettingsBinding by autoCleared()
-    private val mViewModel: SettingsViewModel by viewModels()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val mViewModel: SettingsViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,26 +51,26 @@ class SettingsFragment : DaggerFragment() {
             binding.darkModeSwitch.setOnClickListener {
                 Toast.makeText(it.context, getString(R.string.theme_is_changed), Toast.LENGTH_SHORT)
                     .show()
-                mViewModel.setIsDarkMode(it.context)
+                mViewModel.setIsDarkMode()
             }
             firstViewLayout.setOnClickListener {
                 changeFirstView()
             }
         }
 
-        mViewModel.getIsDarkMode(requireContext())
-        mViewModel.getFirstView(requireContext())
+        mViewModel.getIsDarkMode()
+        mViewModel.getFirstView()
         return binding.root
     }
 
     private fun changeFirstView() {
         context?.let {
             val pageName =
-                if (mViewModel.getFirstView(requireContext()) == 0) getString(R.string.to_station) else getString(
+                if (mViewModel.getFirstView() == 0) getString(R.string.to_station) else getString(
                     R.string.to_college
                 )
             val changePageName =
-                if (mViewModel.getFirstView(requireContext()) == 0) getString(R.string.to_college) else getString(
+                if (mViewModel.getFirstView() == 0) getString(R.string.to_college) else getString(
                     R.string.to_station
                 )
             AlertDialog.Builder(it).apply {
@@ -73,8 +78,8 @@ class SettingsFragment : DaggerFragment() {
                 setTitle(getString(R.string.first_view_title))
                 setMessage(message)
                 setPositiveButton(R.string.switching) { _, _ ->
-                    val page = if (mViewModel.getFirstView(requireContext()) == 0) 1 else 0
-                    mViewModel.setFirstView(requireContext(), page)
+                    val page = if (mViewModel.getFirstView() == 0) 1 else 0
+                    mViewModel.setFirstView(page)
                 }
                 setNegativeButton(R.string.cancel, null)
                 show()

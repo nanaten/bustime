@@ -33,6 +33,9 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
 
+    @Inject
+    lateinit var sharedPref: SharedPref
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,11 +54,11 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
             }
         }
         binding.viewPager.addOnPageChangeListener(this)
-        val page = SharedPref(requireContext()).getFirstViewSetting()
+        val page = sharedPref.getFirstViewSetting()
         binding.viewPager.currentItem = page
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
-            mViewModel.checkAlarm(requireContext())
+            mViewModel.checkAlarm()
             getDiagrams()
         })
 
@@ -95,6 +98,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     }
 
     private fun getDiagrams() {
-        mViewModel.getDiagrams(requireContext())
+        mViewModel.getDiagrams()
     }
 }

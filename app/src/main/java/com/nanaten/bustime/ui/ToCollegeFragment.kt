@@ -90,7 +90,7 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
     }
 
     private fun getDiagramsClearCache() {
-        mViewModel.getDiagrams(requireContext(), false)
+        mViewModel.getDiagrams(false)
     }
 
     override fun onItemClick(index: Int, view: View) {
