@@ -8,13 +8,13 @@ package com.nanaten.bustime.di.ui
 import com.nanaten.bustime.ui.ToCollegeFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @Module
 @Suppress("UNUSED")
-internal abstract class ToCollegeFragmentModule {
-
-
+@ExperimentalCoroutinesApi
+abstract class ToCollegeFragmentModule {
     @ContributesAndroidInjector
     abstract fun provideFragment(): ToCollegeFragment
 

@@ -9,8 +9,10 @@ import com.nanaten.bustime.di.ActivityScope
 import com.nanaten.bustime.ui.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Module
+@ExperimentalCoroutinesApi
 abstract class MainActivityBuilder {
     @ActivityScope
     @ContributesAndroidInjector(

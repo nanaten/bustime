@@ -25,9 +25,11 @@ import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 
+@ExperimentalCoroutinesApi
 class ToStationFragment : DaggerFragment(), ItemClickListener {
 
     @Inject
@@ -93,7 +95,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
     }
 
     private fun getDiagramsClearCache() {
-        mViewModel.getDiagrams(requireContext(), false)
+        mViewModel.getDiagrams(false)
     }
 
     override fun onItemClick(index: Int, view: View) {

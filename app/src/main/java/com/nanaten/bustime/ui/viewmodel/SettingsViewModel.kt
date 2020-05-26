@@ -5,13 +5,14 @@
 
 package com.nanaten.bustime.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanaten.bustime.BuildConfig
-import com.nanaten.bustime.SharedPref
+import com.nanaten.bustime.network.usecase.SettingsUseCase
+import javax.inject.Inject
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel @Inject constructor(private val useCase: SettingsUseCase) :
+    ViewModel() {
     val isDarkMode = MutableLiveData<Boolean>()
     val firstView = MutableLiveData<Int>()
 
@@ -19,24 +20,25 @@ class SettingsViewModel : ViewModel() {
         return BuildConfig.VERSION_NAME
     }
 
-    fun getIsDarkMode(context: Context) {
-        val isDarkMode = SharedPref(context).getIsDarkMode()
+    fun getDarkModeIsOn(): Boolean {
+        val isDarkMode = useCase.getIsDarkMode()
         this.isDarkMode.postValue(isDarkMode)
+        return isDarkMode
     }
 
-    fun setIsDarkMode(context: Context) {
+    fun setDarkModeStatus() {
         val value = isDarkMode.value ?: false
-        SharedPref(context).setIsDarkMode(value)
+        useCase.setIsDarkMode(value)
     }
 
-    fun getFirstView(context: Context): Int {
-        val firstView = SharedPref(context).getFirstViewSetting()
+    fun getFirstView(): Int {
+        val firstView = useCase.getFirstViewSetting()
         this.firstView.postValue(firstView)
         return firstView
     }
 
-    fun setFirstView(context: Context, page: Int) {
+    fun setFirstView(page: Int) {
         firstView.postValue(page)
-        SharedPref(context).setFirstViewSetting(page)
+        useCase.setFirstViewSetting(page)
     }
 }
