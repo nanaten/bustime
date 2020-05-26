@@ -6,7 +6,6 @@
 package com.nanaten.bustime.di.ui
 
 import com.nanaten.bustime.di.ActivityScope
-import com.nanaten.bustime.di.SharedPreferencesModule
 import com.nanaten.bustime.ui.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -21,8 +20,7 @@ abstract class MainActivityBuilder {
             ScaffoldFragmentModule::class,
             ToCollegeFragmentModule::class,
             ToStationFragmentModule::class,
-            SettingsFragmentModule::class,
-            SharedPreferencesModule::class
+            SettingsFragmentModule::class
         ]
     )
     abstract fun bindMainActivity(): MainActivity

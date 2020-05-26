@@ -7,20 +7,24 @@ package com.nanaten.bustime.di.app
 
 import com.nanaten.bustime.App
 import com.nanaten.bustime.di.network.DiagramModule
+import com.nanaten.bustime.di.network.SettingsModule
 import com.nanaten.bustime.di.ui.MainActivityBuilder
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
+@ExperimentalCoroutinesApi
 @Singleton
 @Component(
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
         MainActivityBuilder::class,
-        DiagramModule::class
+        DiagramModule::class,
+        SettingsModule::class
     ]
 )
 
