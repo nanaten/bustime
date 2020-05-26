@@ -14,13 +14,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.network.entity.RemotePdf
 import com.nanaten.bustime.network.usecase.DiagramUseCase
+import com.nanaten.bustime.network.usecase.SettingsUseCase
 import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
@@ -34,7 +34,10 @@ import java.util.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) : ViewModel() {
+class DiagramViewModel @Inject constructor(
+    private val useCase: DiagramUseCase,
+    private val settingsUseCase: SettingsUseCase
+) : ViewModel() {
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
     val toCollegeDiagrams = MutableStateFlow<List<Diagram>>(emptyList())
@@ -48,8 +51,6 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     val networkResult = LiveEvent<NetworkResult>()
     private val appIsActive = MutableStateFlow<Boolean>(false)
 
-    @Inject
-    lateinit var sharedPref: SharedPref
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -90,7 +91,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
 
     fun getDiagrams(isCache: Boolean = true) {
         isLoading.postValue(true)
-        val lastUpdated = sharedPref.getLastUpdated()
+        val lastUpdated = settingsUseCase.getLastUpdated()
         viewModelScope.launch {
             try {
                 val diagram = calendar.value?.diagram
@@ -107,7 +108,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
                     toCollegeDiagrams.value = it.first
                     toStationDiagrams.value = it.second
                 }
-                sharedPref.setLastUpdated()
+                settingsUseCase.setLastUpdated()
                 networkResult.call(NetworkResult.Success)
             } catch (e: Exception) {
                 networkResult.call(NetworkResult.Error)
@@ -230,7 +231,7 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
 
     fun checkAlarm() {
         viewModelScope.launch {
-            val lastUpdated = sharedPref.getLastUpdated()
+            val lastUpdated = settingsUseCase.getLastUpdated()
             // 最終更新が今日でない場合はアラームをクリア
             if (!isToday(lastUpdated)) {
                 useCase.deleteAlarm()
@@ -243,5 +244,9 @@ class DiagramViewModel @Inject constructor(private val useCase: DiagramUseCase) 
     private fun isToday(date: String): Boolean {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         return date == today
+    }
+
+    fun getFirstView(): Int {
+        return settingsUseCase.getFirstViewSetting()
     }
 }

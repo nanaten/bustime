@@ -51,14 +51,14 @@ class SettingsFragment : DaggerFragment() {
             binding.darkModeSwitch.setOnClickListener {
                 Toast.makeText(it.context, getString(R.string.theme_is_changed), Toast.LENGTH_SHORT)
                     .show()
-                mViewModel.setIsDarkMode()
+                mViewModel.setDarkModeStatus()
             }
             firstViewLayout.setOnClickListener {
                 changeFirstView()
             }
         }
 
-        mViewModel.getIsDarkMode()
+        mViewModel.getDarkModeIsOn()
         mViewModel.getFirstView()
         return binding.root
     }

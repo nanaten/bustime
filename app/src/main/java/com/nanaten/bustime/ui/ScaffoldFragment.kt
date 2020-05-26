@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
-import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
@@ -33,9 +32,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
 
-    @Inject
-    lateinit var sharedPref: SharedPref
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,7 +50,7 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
             }
         }
         binding.viewPager.addOnPageChangeListener(this)
-        val page = sharedPref.getFirstViewSetting()
+        val page = mViewModel.getFirstView()
         binding.viewPager.currentItem = page
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
