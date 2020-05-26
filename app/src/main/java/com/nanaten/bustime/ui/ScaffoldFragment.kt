@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.nanaten.bustime.R
-import com.nanaten.bustime.SharedPref
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
@@ -18,9 +18,12 @@ import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@ExperimentalCoroutinesApi
 class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
 
     private var binding: FragmentScaffoldBinding by autoCleared()
@@ -47,18 +50,21 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
             }
         }
         binding.viewPager.addOnPageChangeListener(this)
-        val page = SharedPref(requireContext()).getFirstViewSetting()
+        val page = mViewModel.getFirstView()
         binding.viewPager.currentItem = page
 
         mViewModel.calendar.observe(viewLifecycleOwner, Observer {
-            mViewModel.checkAlarm(requireContext())
+            mViewModel.checkAlarm()
             getDiagrams()
         })
 
         // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
-        mViewModel.toStationDiagrams.observe(viewLifecycleOwner, Observer {
-            mViewModel.switchPosition(binding.viewPager.currentItem)
-        })
+        lifecycleScope.launch {
+            mViewModel.toStationDiagrams.collect {
+                mViewModel.switchPosition(binding.viewPager.currentItem)
+            }
+        }
+
         return binding.root
     }
 
@@ -88,6 +94,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
     }
 
     private fun getDiagrams() {
-        mViewModel.getDiagrams(requireContext())
+        mViewModel.getDiagrams()
     }
 }

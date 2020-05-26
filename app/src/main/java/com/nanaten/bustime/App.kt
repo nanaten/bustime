@@ -7,6 +7,7 @@ import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin
 import com.facebook.soloader.SoLoader
+import com.nanaten.bustime.SharedPrefImpl.Companion.SHARED_PREFERENCES_KEY
 import com.nanaten.bustime.di.app.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
@@ -28,7 +29,7 @@ class App : DaggerApplication() {
             client.addPlugin(
                 SharedPreferencesFlipperPlugin(
                     this,
-                    SharedPref.SHARED_PREFERENCES_KEY
+                    SHARED_PREFERENCES_KEY
                 )
             )
             client.addPlugin(DatabasesFlipperPlugin(this))

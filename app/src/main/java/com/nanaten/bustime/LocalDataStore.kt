@@ -8,8 +8,18 @@ package com.nanaten.bustime
 import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class SharedPref(context: Context) {
+interface LocalDataStore {
+    fun getFirstViewSetting(): Int
+    fun setFirstViewSetting(firstView: Int)
+    fun getIsDarkMode(): Boolean
+    fun setIsDarkMode(isDarkMode: Boolean)
+    fun getLastUpdated(): String
+    fun setLastUpdated()
+}
+
+class SharedPrefImpl @Inject constructor(context: Context) : LocalDataStore {
     companion object {
         const val SHARED_PREFERENCES_KEY = "BUSTIME_SHARED_PREFERENCES"
         const val FIRST_VIEW = "FIRST_VIEW"
@@ -21,33 +31,33 @@ class SharedPref(context: Context) {
         context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
 
     // 起動時に表示する項目
-    fun getFirstViewSetting(): Int {
+    override fun getFirstViewSetting(): Int {
         return sharedPreferences.getInt(FIRST_VIEW, 0)
     }
 
-    fun setFirstViewSetting(firstView: Int) {
+    override fun setFirstViewSetting(firstView: Int) {
         sharedPreferences.edit()
             .putInt(FIRST_VIEW, firstView)
             .apply()
     }
 
     // ダークモード ON/OFF
-    fun getIsDarkMode(): Boolean {
+    override fun getIsDarkMode(): Boolean {
         return sharedPreferences.getBoolean(DARK_MODE, false)
     }
 
-    fun setIsDarkMode(isDarkMode: Boolean) {
+    override fun setIsDarkMode(isDarkMode: Boolean) {
         sharedPreferences.edit()
             .putBoolean(DARK_MODE, isDarkMode)
             .apply()
     }
 
     // 最終更新日
-    fun getLastUpdated(): String {
+    override fun getLastUpdated(): String {
         return sharedPreferences.getString(LAST_UPDATED, "") ?: ""
     }
 
-    fun setLastUpdated() {
+    override fun setLastUpdated() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         sharedPreferences.edit()
             .putString(LAST_UPDATED, today)

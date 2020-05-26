@@ -13,10 +13,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Module
 @Suppress("UNUSED")
-internal abstract class ToStationFragmentModule {
+@ExperimentalCoroutinesApi
+abstract class ToStationFragmentModule {
 
     @Binds
     @IntoMap

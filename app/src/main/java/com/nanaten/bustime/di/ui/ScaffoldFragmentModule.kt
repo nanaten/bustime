@@ -8,14 +8,14 @@ package com.nanaten.bustime.di.ui
 import com.nanaten.bustime.ui.ScaffoldFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @Module
 @Suppress("UNUSED")
-internal abstract class ScaffoldFragmentModule {
-
+@ExperimentalCoroutinesApi
+abstract class ScaffoldFragmentModule {
 
     @ContributesAndroidInjector
     abstract fun provideFragment(): ScaffoldFragment
-
 }
