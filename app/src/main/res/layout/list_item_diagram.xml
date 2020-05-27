@@ -92,7 +92,7 @@
                     android:text="@string/is_last"
                     android:textColor="@color/colorLast"
                     android:textSize="@dimen/text_size_small"
-                    android:visibility="@{viewModel.nextDiagram.last ? View.VISIBLE : View.GONE}" />
+                    app:isVisible="@{viewModel.nextDiagram.last}" />
 
                 <TextView
                     android:id="@+id/is_return"
@@ -107,7 +107,7 @@
                     android:text="@string/is_return"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_small"
-                    android:visibility="@{viewModel.nextDiagram.return ? View.VISIBLE : View.GONE}" />
+                    app:isVisible="@{viewModel.nextDiagram.return}" />
 
                 <TextView
                     android:id="@+id/is_kaizu"
@@ -121,7 +121,7 @@
                     android:text="@string/is_kaizu"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_small"
-                    android:visibility="@{viewModel.nextDiagram.kaizu ? View.VISIBLE : View.GONE}" />
+                    app:isVisible="@{viewModel.nextDiagram.kaizu}" />
             </LinearLayout>
 
             <TextView
