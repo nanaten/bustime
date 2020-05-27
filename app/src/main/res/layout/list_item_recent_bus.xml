@@ -116,7 +116,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="@{item.setAlarm ? View.VISIBLE : View.GONE }"
+            app:isVisible="@{item.setAlarm}"
             tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
