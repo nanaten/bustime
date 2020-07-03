@@ -114,6 +114,7 @@ class DiagramRepositoryImpl @Inject constructor(
 
     override suspend fun saveCalendar(calendar: CalendarEntity): CalendarEntity {
         db.withTransaction {
+            db.calendarDao().deleteCalendar()
             db.calendarDao().addCalendar(calendar)
         }
         return calendar
