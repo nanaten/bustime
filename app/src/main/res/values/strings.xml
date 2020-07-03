@@ -22,7 +22,7 @@
     <string name="first_view_setting">起動時に表示する項目</string>
     <string name="version">バージョン</string>
     <string name="this_app">このアプリについて</string>
-    <string name="discraim">免責事項</string>
+    <string name="precaution">利用上の注意</string>
     <string name="dark_mode">ダークテーマ</string>
     <string name="theme_is_changed">テーマを切り替えました。アプリを再起動してください。</string>
     <string name="first_view_title">起動時の表示</string>
@@ -35,4 +35,5 @@
     <string name="first_view_setting_is_done">起動時に表示する画面を%1$sに切り替えました</string>
     <string name="first_view_setting_message">現在「%1$s」の画面が起動時に表示されます。「%2$s」に変更しますか？</string>
     <string name="ok">OK</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
 </resources>

@@ -6,15 +6,18 @@
 package com.nanaten.bustime.ui
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
@@ -56,6 +59,15 @@ class SettingsFragment : DaggerFragment() {
             firstViewLayout.setOnClickListener {
                 changeFirstView()
             }
+            thisAppLayout.setOnClickListener {
+                showWebView(Const.ABOUT_APP_URL)
+            }
+            precautionLayout.setOnClickListener {
+                showWebView(Const.PRE_CAUTIONS_URL)
+            }
+            privacyPolicyLayout.setOnClickListener {
+                showWebView(Const.PRIVACY_POLICY_URL)
+            }
         }
 
         mViewModel.getDarkModeIsOn()
@@ -92,5 +104,11 @@ class SettingsFragment : DaggerFragment() {
             }
         }
 
+    }
+
+    private fun showWebView(url: String) {
+        CustomTabsIntent.Builder()
+            .build()
+            .launchUrl(requireContext(), Uri.parse(url))
     }
 }
