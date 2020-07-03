@@ -6,15 +6,18 @@
 package com.nanaten.bustime.ui
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
@@ -56,6 +59,15 @@ class SettingsFragment : DaggerFragment() {
             firstViewLayout.setOnClickListener {
                 changeFirstView()
             }
+            thisAppLayout.setOnClickListener {
+                showWebView(Const.ABOUT_APP_URL)
+            }
+            precautionLayout.setOnClickListener {
+                showWebView(Const.PRE_CAUTIONS_URL)
+            }
+            privacyPolicyLayout.setOnClickListener {
+                showWebView(Const.PRIVACY_POLICY_URL)
+            }
         }
 
         mViewModel.getDarkModeIsOn()
@@ -74,17 +86,29 @@ class SettingsFragment : DaggerFragment() {
                     R.string.to_station
                 )
             AlertDialog.Builder(it).apply {
-                val message = "現在「${pageName}」が最初に表示されます。「${changePageName}」に変更しますか？"
+                val message =
+                    context.getString(R.string.first_view_setting_message, pageName, changePageName)
                 setTitle(getString(R.string.first_view_title))
                 setMessage(message)
                 setPositiveButton(R.string.switching) { _, _ ->
                     val page = if (mViewModel.getFirstView() == 0) 1 else 0
                     mViewModel.setFirstView(page)
+                    AlertDialog.Builder(context).apply {
+                        setTitle(R.string.first_view_title)
+                        setMessage(getString(R.string.first_view_setting_is_done, changePageName))
+                        setPositiveButton(R.string.ok, null)
+                    }.show()
                 }
                 setNegativeButton(R.string.cancel, null)
                 show()
             }
         }
 
+    }
+
+    private fun showWebView(url: String) {
+        CustomTabsIntent.Builder()
+            .build()
+            .launchUrl(requireContext(), Uri.parse(url))
     }
 }
