@@ -67,7 +67,7 @@
                     android:layout_marginEnd="@dimen/wide_margin"
                     android:layout_marginBottom="@dimen/default_margin"
                     android:text="@{viewModel.firstView == 0 ? `浄水駅行き` : `大学行き`}"
-                    android:textColor="@color/colorGreyText"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -25,11 +25,14 @@
     <string name="discraim">免責事項</string>
     <string name="dark_mode">ダークテーマ</string>
     <string name="theme_is_changed">テーマを切り替えました。アプリを再起動してください。</string>
-    <string name="first_view_title">表示</string>
+    <string name="first_view_title">起動時の表示</string>
     <string name="is_kaizu">貝津経由</string>
     <string name="is_return">折返し</string>
     <string name="is_last">最終バス</string>
     <string name="operation_is_end">本日の運行は終了しました</string>
     <string name="operation_is_suspend">本日は運休です</string>
     <string name="calendar_and_diagrams_can_next">明日以降の運行カレンダーと時刻表は\n以下から確認できます</string>
+    <string name="first_view_setting_is_done">起動時に表示する画面を%1$sに切り替えました</string>
+    <string name="first_view_setting_message">現在「%1$s」の画面が起動時に表示されます。「%2$s」に変更しますか？</string>
+    <string name="ok">OK</string>
 </resources>

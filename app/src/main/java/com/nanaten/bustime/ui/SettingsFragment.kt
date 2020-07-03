@@ -74,12 +74,18 @@ class SettingsFragment : DaggerFragment() {
                     R.string.to_station
                 )
             AlertDialog.Builder(it).apply {
-                val message = "現在「${pageName}」が最初に表示されます。「${changePageName}」に変更しますか？"
+                val message =
+                    context.getString(R.string.first_view_setting_message, pageName, changePageName)
                 setTitle(getString(R.string.first_view_title))
                 setMessage(message)
                 setPositiveButton(R.string.switching) { _, _ ->
                     val page = if (mViewModel.getFirstView() == 0) 1 else 0
                     mViewModel.setFirstView(page)
+                    AlertDialog.Builder(context).apply {
+                        setTitle(R.string.first_view_title)
+                        setMessage(getString(R.string.first_view_setting_is_done, changePageName))
+                        setPositiveButton(R.string.ok, null)
+                    }.show()
                 }
                 setNegativeButton(R.string.cancel, null)
                 show()
