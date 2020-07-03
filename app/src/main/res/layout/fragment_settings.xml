@@ -67,7 +67,7 @@
                     android:layout_marginEnd="@dimen/wide_margin"
                     android:layout_marginBottom="@dimen/default_margin"
                     android:text="@{viewModel.firstView == 0 ? `浄水駅行き` : `大学行き`}"
-                    android:textColor="@color/colorGreyText"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -197,7 +197,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/discraim_layout"
+                android:id="@+id/precaution_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/res_border_bottom_1px"
@@ -207,13 +207,51 @@
                 app:layout_constraintTop_toBottomOf="@id/this_app_layout">
 
                 <TextView
-                    android:id="@+id/discraim_label"
+                    android:id="@+id/precaution_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/wide_margin"
                     android:layout_marginTop="@dimen/default_margin"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/discraim"
+                    android:text="@string/precaution"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:padding="4dp"
+                    android:rotation="180"
+                    android:src="@drawable/ic_arrow_back"
+                    android:tint="@color/colorGreyText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/privacy_policy_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/res_border_bottom_1px"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/precaution_layout">
+
+                <TextView
+                    android:id="@+id/privacy_policy_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/wide_margin"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/privacy_policy"
                     android:textColor="@color/colorBlackText"
                     android:textSize="@dimen/text_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
