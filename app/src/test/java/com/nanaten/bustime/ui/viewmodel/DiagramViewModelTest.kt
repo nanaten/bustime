@@ -8,12 +8,11 @@ package com.nanaten.bustime.ui.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.nanaten.bustime.network.entity.*
-import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.repository.DiagramRepository
+import com.nanaten.bustime.network.repository.SettingsRepository
 import com.nanaten.bustime.network.usecase.DiagramUseCaseImpl
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
+import com.nanaten.bustime.network.usecase.SettingsUseCaseImpl
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -24,28 +23,28 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class DiagramViewModelTest {
 
     private lateinit var mockRepository: DiagramRepository
+    private lateinit var mockSettingsRepository: SettingsRepository
     private lateinit var viewModel: DiagramViewModel
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+
     @Before
     fun setUp() {
         mockRepository = getMockRepository()
+        mockSettingsRepository = getMockSettingRepository()
         viewModel = getViewModel()
         Dispatchers.setMain(Dispatchers.Unconfined)
         viewModel.networkResult.call(null)
         viewModel.calendar.value = null
         viewModel.nowSecond.value = null
         viewModel.pdfUrl.value = null
-        viewModel.setOldDate(null)
     }
 
     @After
@@ -60,17 +59,6 @@ class DiagramViewModelTest {
             coVerify { mockRepository.getTodayCalendar() }
             Truth.assertThat(viewModel.calendar.value?.date).isEqualTo("2020-04-28")
             Truth.assertThat(viewModel.networkResult.value).isEqualTo(NetworkResult.Success)
-        }
-    }
-
-    @Test
-    fun getCalendarAvailable() {
-        runBlocking {
-            viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", true)
-            viewModel.getCalendar()
-            coVerify(exactly = 0) { mockRepository.getTodayCalendar() }
-            Truth.assertThat(viewModel.calendar.value?.isSuspend).isTrue()
-            Truth.assertThat(viewModel.networkResult.value).isNull()
         }
     }
 
@@ -91,21 +79,11 @@ class DiagramViewModelTest {
         viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", false)
         runBlocking {
             viewModel.getDiagrams()
-            coVerify { mockRepository.getDiagrams(any()) }
+            coVerify { mockRepository.getDiagrams(any(), any()) }
             Truth.assertThat(viewModel.networkResult.value).isEqualTo(NetworkResult.Success)
             Truth.assertThat(viewModel.toCollegeDiagrams.value).isNotEmpty()
             Truth.assertThat(viewModel.toStationDiagrams.value).isNotEmpty()
-            Truth.assertThat(viewModel.toStationDiagrams.value?.size).isEqualTo(2)
-        }
-    }
-
-    @Test
-    fun getDiagramsOldDateAvailable() {
-        viewModel.setOldDate(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
-        viewModel.calendar.value = Calendar("2020-04-28", "b", "Bダイヤ", false)
-        runBlocking {
-            viewModel.getDiagrams()
-            coVerify(exactly = 0) { mockRepository.getDiagrams(any()) }
+            Truth.assertThat(viewModel.toStationDiagrams.value.size).isEqualTo(2)
         }
     }
 
@@ -117,7 +95,7 @@ class DiagramViewModelTest {
 
         runBlocking {
             viewModel.getDiagrams()
-            coVerify { mockRepository.getDiagrams(any()) }
+            coVerify { mockRepository.getDiagrams(any(), any()) }
             Truth.assertThat(viewModel.networkResult.value).isEqualTo(NetworkResult.Error)
         }
     }
@@ -170,14 +148,14 @@ class DiagramViewModelTest {
         runBlocking {
             viewModel.toCollegeDiagrams.value = listOf(
                 Diagram(
-                    18, 30, 66600,
+                    1, 0, 18, 30, 66600,
                     isLast = false, isReturn = false, isKaizu = false,
                     arrivalHour = 18, arrivalMinute = 45, arrivalSecond = 67500
                 )
             )
             viewModel.toStationDiagrams.value = listOf(
                 Diagram(
-                    9, 54, 35640,
+                    1, 0, 9, 54, 35640,
                     isLast = false, isReturn = false, isKaizu = false,
                     arrivalHour = 10, arrivalMinute = 9, arrivalSecond = 36540
                 )
@@ -190,19 +168,33 @@ class DiagramViewModelTest {
     private fun getMockRepository(): DiagramRepository {
         return mockk {
             coEvery { getTodayCalendar() } returns flowOf(
-                CalendarEntity("2020-04-28", "b", "Bダイヤ", false)
+                CalendarEntity(1, "2020-04-28", "b", "Bダイヤ", false)
             )
-            coEvery { getDiagrams(any()) } returns flowOf(
-                listOf(
-                    DiagramEntity(
-                        18, 30, 66600,
-                        isLast = false, isReturn = false, isKaizu = false,
-                        arrivalHour = 18, arrivalMinute = 45, arrivalSecond = 67500
+            coEvery { getDiagrams(any(), any()) } returns flowOf(
+                Pair(
+                    listOf(
+                        DiagramEntity(
+                            1, 0, 18, 30, 66600,
+                            isLast = false, isReturn = false, isKaizu = false,
+                            arrivalHour = 18, arrivalMinute = 45, arrivalSecond = 67500
+                        ),
+                        DiagramEntity(
+                            1, 0, 9, 54, 35640,
+                            isLast = false, isReturn = false, isKaizu = false,
+                            arrivalHour = 10, arrivalMinute = 9, arrivalSecond = 36540
+                        )
                     ),
-                    DiagramEntity(
-                        9, 54, 35640,
-                        isLast = false, isReturn = false, isKaizu = false,
-                        arrivalHour = 10, arrivalMinute = 9, arrivalSecond = 36540
+                    listOf(
+                        DiagramEntity(
+                            1, 1, 18, 30, 66600,
+                            isLast = false, isReturn = false, isKaizu = false,
+                            arrivalHour = 18, arrivalMinute = 45, arrivalSecond = 67500
+                        ),
+                        DiagramEntity(
+                            1, 1, 9, 54, 35640,
+                            isLast = false, isReturn = false, isKaizu = false,
+                            arrivalHour = 10, arrivalMinute = 9, arrivalSecond = 36540
+                        )
                     )
                 )
             )
@@ -212,14 +204,24 @@ class DiagramViewModelTest {
                     "https://pdfurl.jp/timetable"
                 )
             )
+            coEvery { getAlarm() } returns null
         }
     }
 
     private fun getMockRepositoryError(): DiagramRepository {
         return mockk {
             coEvery { getTodayCalendar() } throws Exception()
-            coEvery { getDiagrams(any()) } throws Exception()
+            coEvery { getDiagrams(any(), any()) } throws Exception()
             coEvery { getPdfUrl() } throws Exception()
+            coEvery { getAlarm() } returns null
+        }
+    }
+
+    private fun getMockSettingRepository(): SettingsRepository {
+        return mockk {
+            coEvery { getLastUpdated() } returns "2020-04-27"
+            coEvery { getFirstViewSetting() } returns 0
+            coEvery { setLastUpdated() } just runs
         }
     }
 
@@ -227,6 +229,9 @@ class DiagramViewModelTest {
         return DiagramViewModel(
             DiagramUseCaseImpl(
                 mockRepository
+            ),
+            SettingsUseCaseImpl(
+                getMockSettingRepository()
             )
         )
     }
