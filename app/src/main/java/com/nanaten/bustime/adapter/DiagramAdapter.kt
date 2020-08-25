@@ -111,6 +111,13 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
 
     fun updateTime() {
         notifyItemChanged(0)
+        val newList = allList.filter { it.second >= viewModel.nowSecond.value ?: 0L }
+        if (newList.size != this.list.size) {
+            this.list = newList
+            this.list.forEachIndexed { i, _ ->
+                notifyItemChanged(i + 2)
+            }
+        }
     }
 
     class DiagramItemViewHolder(
