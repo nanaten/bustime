@@ -18,7 +18,9 @@ import com.nanaten.bustime.databinding.ListItemRecentBusBinding
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPosition: Int) :
     BaseRecyclerViewAdapter() {
     private var list: List<Diagram> = listOf()
@@ -83,7 +85,7 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
             }
             is RecentItemViewHolder -> {
                 val index = holder.adapterPosition - 2
-                holder.bind(list[index])
+                holder.bind(list[index], tabPosition)
                 holder.binding.order.text = "${index + 1}"
                 holder.itemView.setOnClickListener {
                     it.tag = list[index]
@@ -177,8 +179,15 @@ class DiagramAdapter(private val viewModel: DiagramViewModel, private val tabPos
             false
         )
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Diagram) {
+        fun bind(item: Diagram, tabPosition: Int) {
             binding.item = item
+            if (tabPosition == 0) {
+                binding.startLabel.text = binding.root.context.getString(R.string.start_college)
+                binding.arrivalLabel.text = binding.root.context.getString(R.string.arrival_station)
+            } else {
+                binding.startLabel.text = binding.root.context.getString(R.string.start_station)
+                binding.arrivalLabel.text = binding.root.context.getString(R.string.arrival_college)
+            }
         }
     }
 }
