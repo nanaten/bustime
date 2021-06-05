@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
@@ -24,13 +24,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
+class ScaffoldFragment : DaggerFragment() {
 
     private var binding: FragmentScaffoldBinding by autoCleared()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
+    private val adapter by lazy {
+        ScaffoldPagerAdapter(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +44,7 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
-            viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
+            viewPager.adapter = adapter
             bottomNavigation.setOnNavigationItemSelectedListener { menu ->
                 viewPager.currentItem =
                     HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
@@ -49,7 +52,13 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
                 return@setOnNavigationItemSelectedListener true
             }
         }
-        binding.viewPager.addOnPageChangeListener(this)
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.bottomNavigation.menu.getItem(position).isChecked = true
+                mViewModel.switchPosition(position)
+            }
+        })
         val page = mViewModel.getFirstView()
         binding.viewPager.currentItem = page
 
@@ -66,19 +75,6 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
         }
 
         return binding.root
-    }
-
-    // UNUSED
-    override fun onPageScrollStateChanged(state: Int) {
-    }
-
-    // UNUSED
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
-
-    override fun onPageSelected(position: Int) {
-        binding.bottomNavigation.menu.getItem(position).isChecked = true
-        mViewModel.switchPosition(position)
     }
 
     override fun onResume() {

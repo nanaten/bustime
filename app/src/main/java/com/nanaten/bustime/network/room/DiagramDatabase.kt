@@ -11,7 +11,11 @@ import com.nanaten.bustime.network.entity.AlarmEntity
 import com.nanaten.bustime.network.entity.CalendarEntity
 import com.nanaten.bustime.network.entity.DiagramEntity
 
-@Database(entities = [CalendarEntity::class, DiagramEntity::class, AlarmEntity::class], version = 1)
+@Database(
+    entities = [CalendarEntity::class, DiagramEntity::class, AlarmEntity::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class DiagramDatabase : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
     abstract fun diagramDao(): DiagramDao
