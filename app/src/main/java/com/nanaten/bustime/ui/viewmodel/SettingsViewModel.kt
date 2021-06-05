@@ -31,7 +31,7 @@ class SettingsViewModel @Inject constructor(private val useCase: SettingsUseCase
         useCase.setIsDarkMode(value)
     }
 
-    fun getFirstView(): Int {
+    fun getFirstViewSetting(): Int {
         val firstView = useCase.getFirstViewSetting()
         this.firstView.postValue(firstView)
         return firstView
