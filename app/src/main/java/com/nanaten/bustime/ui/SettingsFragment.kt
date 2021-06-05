@@ -71,18 +71,18 @@ class SettingsFragment : DaggerFragment() {
         }
 
         mViewModel.getDarkModeIsOn()
-        mViewModel.getFirstViewSetting()
+        mViewModel.getFirstView()
         return binding.root
     }
 
     private fun changeFirstView() {
         context?.let {
             val pageName =
-                if (mViewModel.getFirstViewSetting() == 0) getString(R.string.to_station) else getString(
+                if (mViewModel.getFirstView() == 0) getString(R.string.to_station) else getString(
                     R.string.to_college
                 )
             val changePageName =
-                if (mViewModel.getFirstViewSetting() == 0) getString(R.string.to_college) else getString(
+                if (mViewModel.getFirstView() == 0) getString(R.string.to_college) else getString(
                     R.string.to_station
                 )
             AlertDialog.Builder(it).apply {
@@ -91,7 +91,7 @@ class SettingsFragment : DaggerFragment() {
                 setTitle(getString(R.string.first_view_title))
                 setMessage(message)
                 setPositiveButton(R.string.switching) { _, _ ->
-                    val page = if (mViewModel.getFirstViewSetting() == 0) 1 else 0
+                    val page = if (mViewModel.getFirstView() == 0) 1 else 0
                     mViewModel.setFirstView(page)
                     AlertDialog.Builder(context).apply {
                         setTitle(R.string.first_view_title)
