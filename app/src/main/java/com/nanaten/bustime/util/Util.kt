@@ -12,7 +12,6 @@ import androidx.lifecycle.distinctUntilChanged
 import com.nanaten.bustime.databinding.ToolbarBinding
 
 fun ToolbarBinding.setToolbar(
-    title: String,
     backVisibility: Int,
     settingVisibility: Int,
     backListener: ((View) -> Unit)? = null,
@@ -22,7 +21,6 @@ fun ToolbarBinding.setToolbar(
     this.back.setOnClickListener(backListener)
     this.setting.visibility = settingVisibility
     this.setting.setOnClickListener(settingListener)
-    this.title.text = title
 }
 
 /**
