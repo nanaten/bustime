@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
@@ -21,7 +20,6 @@ import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
-import com.nanaten.bustime.util.setToolbar
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,14 +47,6 @@ class ToCollegeFragment : DaggerFragment(), ItemClickListener {
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)
         binding.apply {
-            toolbar.setToolbar(
-                getString(R.string.to_college),
-                backVisibility = View.GONE,
-                settingVisibility = View.VISIBLE,
-                settingListener = {
-                    findNavController().navigate(R.id.action_home_to_settings)
-                }
-            )
             toCollegeRv.layoutManager = CustomLinearLayoutManager(context)
             toCollegeRv.adapter = mAdapter
             (toCollegeRv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false

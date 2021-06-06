@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.network.entity.Calendar
 import com.nanaten.bustime.network.entity.Diagram
@@ -51,6 +52,7 @@ class DiagramViewModel @Inject constructor(
     val pdfUrl = MutableLiveData<RemotePdf>()
     val networkResult = LiveEvent<NetworkResult>()
     private val appIsActive = MutableStateFlow<Boolean>(false)
+    val toolbarTitle = MutableLiveData<Int>(R.string.to_station)
 
     val mergedDiagrams = merge(
         toCollegeDiagrams,
@@ -163,9 +165,11 @@ class DiagramViewModel @Inject constructor(
         when (position) {
             HomeTabs.TO_COLLAGE.value -> {
                 diagrams.postValue(toCollegeDiagrams.value)
+                toolbarTitle.postValue(R.string.to_college)
             }
             else -> {
                 diagrams.postValue(toStationDiagrams.value)
+                toolbarTitle.postValue(R.string.to_station)
             }
         }
     }

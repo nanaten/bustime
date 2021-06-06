@@ -44,10 +44,10 @@ class SettingsFragment : DaggerFragment() {
 
         binding.apply {
             toolbar.setToolbar(
-                title = getString(R.string.setting),
                 settingVisibility = View.GONE,
                 backVisibility = View.VISIBLE,
-                backListener = { findNavController().popBackStack() }
+                backListener = { findNavController().popBackStack() },
+                settingListener = null
             )
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel

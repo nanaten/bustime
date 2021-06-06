@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
@@ -16,6 +17,7 @@ import com.nanaten.bustime.databinding.FragmentScaffoldBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
+import com.nanaten.bustime.util.setToolbar
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -29,9 +31,6 @@ class ScaffoldFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val mViewModel: DiagramViewModel by viewModels { viewModelFactory }
-    private val adapter by lazy {
-        ScaffoldPagerAdapter(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +39,16 @@ class ScaffoldFragment : DaggerFragment() {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
+            toolbar.setToolbar(
+                backVisibility = View.GONE,
+                settingVisibility = View.VISIBLE,
+                settingListener = {
+                    findNavController().navigate(R.id.action_home_to_settings)
+                }
+            )
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
-            viewPager.adapter = adapter
+
             bottomNavigation.setOnNavigationItemSelectedListener { menu ->
                 viewPager.currentItem =
                     HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
@@ -50,6 +56,7 @@ class ScaffoldFragment : DaggerFragment() {
                 return@setOnNavigationItemSelectedListener true
             }
         }
+        binding.viewPager.adapter = ScaffoldPagerAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
