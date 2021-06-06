@@ -25,6 +25,18 @@ fun ToolbarBinding.setToolbar(
     this.title.text = title
 }
 
+/**
+ * 複数のLiveDataの値をマージして流す
+ */
+fun <T : Any> merge(vararg liveData: LiveData<T>): LiveData<T> {
+    return MediatorLiveData<T>().apply {
+        liveData.forEach {
+            addSource(it) { emitted ->
+                value = emitted
+            }
+        }
+    }
+}
 
 inline fun <T : Any, LIVE1 : Any, LIVE2 : Any> combine(
     initialValue: T,

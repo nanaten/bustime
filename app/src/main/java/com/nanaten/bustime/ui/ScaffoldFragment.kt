@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.nanaten.bustime.R
@@ -19,7 +18,6 @@ import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,7 +37,7 @@ class ScaffoldFragment : DaggerFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -60,16 +58,15 @@ class ScaffoldFragment : DaggerFragment() {
             }
         })
         val page = mViewModel.getFirstView()
-        binding.viewPager.currentItem = page
+        binding.viewPager.setCurrentItem(page, false)
 
-        mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+        mViewModel.calendar.observe(viewLifecycleOwner) {
             mViewModel.checkAlarm()
             getDiagrams()
-        })
+        }
 
-        // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
         lifecycleScope.launch {
-            mViewModel.toStationDiagrams.collect {
+            mViewModel.mergedDiagrams.observe(viewLifecycleOwner) {
                 mViewModel.switchPosition(binding.viewPager.currentItem)
             }
         }

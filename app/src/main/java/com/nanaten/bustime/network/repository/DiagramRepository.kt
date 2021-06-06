@@ -51,7 +51,7 @@ class DiagramRepositoryImpl @Inject constructor(
     override suspend fun getTodayCalendar(): Flow<CalendarEntity> {
         return withContext(Dispatchers.Default) {
             if (getCalendarFromCache() != null) {
-                flowOf(getCalendarFromCache()!!)
+                flowOf(requireNotNull(getCalendarFromCache()))
             } else {
                 firebaseObserver.getTodayCalendar()
                     .apply { saveCalendar(single()) }
