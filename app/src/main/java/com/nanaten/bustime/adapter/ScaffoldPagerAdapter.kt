@@ -6,19 +6,21 @@
 package com.nanaten.bustime.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.nanaten.bustime.R
 import com.nanaten.bustime.ui.ToCollegeFragment
 import com.nanaten.bustime.ui.ToStationFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class ScaffoldPagerAdapter(fm: FragmentManager) :
-    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    override fun getCount(): Int {
+class ScaffoldPagerAdapter(fragment: Fragment) :
+    FragmentStateAdapter(fragment) {
+
+    override fun getItemCount(): Int {
         return HomeTabs.values().size
     }
 
-    override fun getItem(position: Int): Fragment {
+    @ExperimentalCoroutinesApi
+    override fun createFragment(position: Int): Fragment {
         return when (position) {
             HomeTabs.TO_STATION.value -> ToStationFragment()
             else -> ToCollegeFragment()

@@ -9,9 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
@@ -22,7 +20,6 @@ import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
-import com.nanaten.bustime.util.setToolbar
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,7 +41,7 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
         mViewModel =
             ViewModelProvider(
@@ -55,14 +52,6 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)
         binding.apply {
-            toolbar.setToolbar(
-                getString(R.string.to_station),
-                backVisibility = View.GONE,
-                settingVisibility = View.VISIBLE,
-                settingListener = {
-                    findNavController().navigate(R.id.action_home_to_settings)
-                }
-            )
             toStationRv.layoutManager = CustomLinearLayoutManager(context)
             toStationRv.adapter = mAdapter
             (toStationRv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
@@ -73,24 +62,23 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
             }
         }
 
-        mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+        mViewModel.calendar.observe(viewLifecycleOwner) {
             mAdapter.updateCalendar(it)
-        })
+        }
 
-        mViewModel.diagrams.observe(viewLifecycleOwner, Observer {
+        mViewModel.diagrams.observe(viewLifecycleOwner) {
             mAdapter.updateDiagram(it)
-        })
+        }
 
-        mViewModel.next.observe(viewLifecycleOwner, Observer {
+        mViewModel.next.observe(viewLifecycleOwner) {
             mAdapter.updateTime()
-        })
+        }
 
-
-        mViewModel.networkResult.observe(viewLifecycleOwner, "networkResult", Observer {
+        mViewModel.networkResult.observe(viewLifecycleOwner, "networkResult") {
             if (it is NetworkResult.Error) {
                 showToast(getString(R.string.network_error_message))
             }
-        })
+        }
         return binding.root
     }
 

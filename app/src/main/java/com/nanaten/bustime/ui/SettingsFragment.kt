@@ -39,15 +39,15 @@ class SettingsFragment : DaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
 
         binding.apply {
             toolbar.setToolbar(
-                title = getString(R.string.setting),
                 settingVisibility = View.GONE,
                 backVisibility = View.VISIBLE,
-                backListener = { findNavController().popBackStack() }
+                backListener = { findNavController().popBackStack() },
+                settingListener = null
             )
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel

@@ -8,6 +8,7 @@ package com.nanaten.bustime.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanaten.bustime.BuildConfig
+import com.nanaten.bustime.R
 import com.nanaten.bustime.network.usecase.SettingsUseCase
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ class SettingsViewModel @Inject constructor(private val useCase: SettingsUseCase
     ViewModel() {
     val isDarkMode = MutableLiveData<Boolean>()
     val firstView = MutableLiveData<Int>()
+    val toolbarTitle = MutableLiveData<Int>(R.string.setting)
 
     fun getVersion(): String {
         return BuildConfig.VERSION_NAME

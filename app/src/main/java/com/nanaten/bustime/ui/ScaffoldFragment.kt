@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
@@ -17,14 +17,14 @@ import com.nanaten.bustime.databinding.FragmentScaffoldBinding
 import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
+import com.nanaten.bustime.util.setToolbar
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
+class ScaffoldFragment : DaggerFragment() {
 
     private var binding: FragmentScaffoldBinding by autoCleared()
 
@@ -36,12 +36,19 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
+            toolbar.setToolbar(
+                backVisibility = View.GONE,
+                settingVisibility = View.VISIBLE,
+                settingListener = {
+                    findNavController().navigate(R.id.action_home_to_settings)
+                }
+            )
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
-            viewPager.adapter = ScaffoldPagerAdapter(childFragmentManager)
+
             bottomNavigation.setOnNavigationItemSelectedListener { menu ->
                 viewPager.currentItem =
                     HomeTabs.values().firstOrNull { it.resId == menu.itemId }?.value
@@ -49,36 +56,29 @@ class ScaffoldFragment : DaggerFragment(), ViewPager.OnPageChangeListener {
                 return@setOnNavigationItemSelectedListener true
             }
         }
-        binding.viewPager.addOnPageChangeListener(this)
+        binding.viewPager.adapter = ScaffoldPagerAdapter(this)
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.bottomNavigation.menu.getItem(position).isChecked = true
+                mViewModel.switchPosition(position)
+            }
+        })
         val page = mViewModel.getFirstView()
-        binding.viewPager.currentItem = page
+        binding.viewPager.setCurrentItem(page, false)
 
-        mViewModel.calendar.observe(viewLifecycleOwner, Observer {
+        mViewModel.calendar.observe(viewLifecycleOwner) {
             mViewModel.checkAlarm()
             getDiagrams()
-        })
+        }
 
-        // toStationDiagramsの方が後にpostValueされるのでtoStationDiagramsをobserveする
         lifecycleScope.launch {
-            mViewModel.toStationDiagrams.collect {
+            mViewModel.mergedDiagrams.observe(viewLifecycleOwner) {
                 mViewModel.switchPosition(binding.viewPager.currentItem)
             }
         }
 
         return binding.root
-    }
-
-    // UNUSED
-    override fun onPageScrollStateChanged(state: Int) {
-    }
-
-    // UNUSED
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
-
-    override fun onPageSelected(position: Int) {
-        binding.bottomNavigation.menu.getItem(position).isChecked = true
-        mViewModel.switchPosition(position)
     }
 
     override fun onResume() {

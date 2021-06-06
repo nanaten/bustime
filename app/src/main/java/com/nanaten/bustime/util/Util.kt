@@ -12,7 +12,6 @@ import androidx.lifecycle.distinctUntilChanged
 import com.nanaten.bustime.databinding.ToolbarBinding
 
 fun ToolbarBinding.setToolbar(
-    title: String,
     backVisibility: Int,
     settingVisibility: Int,
     backListener: ((View) -> Unit)? = null,
@@ -22,9 +21,20 @@ fun ToolbarBinding.setToolbar(
     this.back.setOnClickListener(backListener)
     this.setting.visibility = settingVisibility
     this.setting.setOnClickListener(settingListener)
-    this.title.text = title
 }
 
+/**
+ * 複数のLiveDataの値をマージして流す
+ */
+fun <T : Any> merge(vararg liveData: LiveData<T>): LiveData<T> {
+    return MediatorLiveData<T>().apply {
+        liveData.forEach {
+            addSource(it) { emitted ->
+                value = emitted
+            }
+        }
+    }
+}
 
 inline fun <T : Any, LIVE1 : Any, LIVE2 : Any> combine(
     initialValue: T,

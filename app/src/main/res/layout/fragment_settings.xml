@@ -22,7 +22,8 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar"
+            app:title="@{viewModel.toolbarTitle}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/view_setting_layout"
@@ -189,7 +190,7 @@
                     android:padding="4dp"
                     android:rotation="180"
                     android:src="@drawable/ic_arrow_back"
-                    android:tint="@color/colorGreyText"
+                    app:tint="@color/colorGreyText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -227,7 +228,7 @@
                     android:padding="4dp"
                     android:rotation="180"
                     android:src="@drawable/ic_arrow_back"
-                    android:tint="@color/colorGreyText"
+                    app:tint="@color/colorGreyText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -265,7 +266,7 @@
                     android:padding="4dp"
                     android:rotation="180"
                     android:src="@drawable/ic_arrow_back"
-                    android:tint="@color/colorGreyText"
+                    app:tint="@color/colorGreyText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
