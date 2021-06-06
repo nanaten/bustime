@@ -24,6 +24,7 @@ import com.nanaten.bustime.network.usecase.SettingsUseCase
 import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
+import com.nanaten.bustime.util.merge
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +41,8 @@ class DiagramViewModel @Inject constructor(
 ) : ViewModel() {
     val calendar = MutableLiveData<Calendar>()
     val diagrams = MutableLiveData<List<Diagram>>()
-    val toCollegeDiagrams = MutableStateFlow<List<Diagram>>(emptyList())
-    val toStationDiagrams = MutableStateFlow<List<Diagram>>(emptyList())
+    private val toCollegeDiagrams = MutableLiveData<List<Diagram>>(emptyList())
+    private val toStationDiagrams = MutableLiveData<List<Diagram>>(emptyList())
     val nowSecond = MutableLiveData<Long>(0L)
     val startTime = MutableLiveData<String>("")
     val arrivalTime = MutableLiveData<String>("")
@@ -51,6 +52,10 @@ class DiagramViewModel @Inject constructor(
     val networkResult = LiveEvent<NetworkResult>()
     private val appIsActive = MutableStateFlow<Boolean>(false)
 
+    val mergedDiagrams = merge(
+        toCollegeDiagrams,
+        toStationDiagrams
+    )
 
     /**
      * 次のバスまでの時間を2つのLiveDataから割り出す
@@ -105,8 +110,8 @@ class DiagramViewModel @Inject constructor(
                 val cache = if (isToday(lastUpdated)) isCache else false
                 val list = useCase.getDiagrams(diagram, cache)
                 list.collect {
-                    toCollegeDiagrams.value = it.first
-                    toStationDiagrams.value = it.second
+                    toCollegeDiagrams.value = it.first ?: emptyList()
+                    toStationDiagrams.value = it.second ?: emptyList()
                 }
                 settingsUseCase.setLastUpdated()
                 networkResult.call(NetworkResult.Success)
