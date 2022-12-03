@@ -9,29 +9,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.nanaten.bustime.R
 import com.nanaten.bustime.adapter.DiagramAdapter
 import com.nanaten.bustime.adapter.ItemClickListener
 import com.nanaten.bustime.databinding.FragmentToStationBinding
-import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
 import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
-import dagger.android.support.DaggerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
-class ToStationFragment : DaggerFragment(), ItemClickListener {
+@AndroidEntryPoint
+class ToStationFragment : Fragment(), ItemClickListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    lateinit var mViewModel: DiagramViewModel
+    private val mViewModel: DiagramViewModel by viewModels({ requireParentFragment() })
     private var binding: FragmentToStationBinding by autoCleared()
 
     // タブのポジション設定
@@ -43,11 +41,6 @@ class ToStationFragment : DaggerFragment(), ItemClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
-        mViewModel =
-            ViewModelProvider(
-                requireParentFragment(),
-                viewModelFactory
-            ).get(DiagramViewModel::class.java)
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)

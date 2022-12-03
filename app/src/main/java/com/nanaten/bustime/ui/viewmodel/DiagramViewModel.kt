@@ -26,6 +26,7 @@ import com.nanaten.bustime.service.AlarmReceiver
 import com.nanaten.bustime.util.LiveEvent
 import com.nanaten.bustime.util.combine
 import com.nanaten.bustime.util.merge
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ import java.util.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@HiltViewModel
 class DiagramViewModel @Inject constructor(
     private val useCase: DiagramUseCase,
     private val settingsUseCase: SettingsUseCase
@@ -203,7 +205,7 @@ class DiagramViewModel @Inject constructor(
             context.applicationContext,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         if (diagram.setAlarm) {
             val calendar = getTodayZeroTimeCalendar()
