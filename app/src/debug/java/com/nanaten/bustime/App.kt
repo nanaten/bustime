@@ -1,5 +1,6 @@
 package com.nanaten.bustime
 
+import android.app.Application
 import com.facebook.flipper.android.AndroidFlipperClient
 import com.facebook.flipper.android.utils.FlipperUtils
 import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
@@ -8,16 +9,10 @@ import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin
 import com.facebook.soloader.SoLoader
 import com.nanaten.bustime.SharedPrefImpl.Companion.SHARED_PREFERENCES_KEY
-import com.nanaten.bustime.di.app.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 
-
-class App : DaggerApplication() {
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.factory()
-            .create(this)
-    }
+@HiltAndroidApp
+class App: Application() {
 
     override fun onCreate() {
         super.onCreate()

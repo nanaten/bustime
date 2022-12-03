@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModel
 import com.nanaten.bustime.BuildConfig
 import com.nanaten.bustime.R
 import com.nanaten.bustime.network.usecase.SettingsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class SettingsViewModel @Inject constructor(private val useCase: SettingsUseCase) :
     ViewModel() {
     val isDarkMode = MutableLiveData<Boolean>()

@@ -15,26 +15,23 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
-import com.nanaten.bustime.di.viewmodel.ViewModelFactory
 import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
 import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
-import dagger.android.support.DaggerFragment
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class SettingsFragment : DaggerFragment() {
+@AndroidEntryPoint
+class SettingsFragment : Fragment() {
 
     private var binding: FragmentSettingsBinding by autoCleared()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val mViewModel: SettingsViewModel by viewModels { viewModelFactory }
+    private val mViewModel: SettingsViewModel by viewModels( { requireActivity() } )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
