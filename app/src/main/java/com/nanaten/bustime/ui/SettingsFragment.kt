@@ -22,22 +22,22 @@ import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
 import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
-import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
-    private var binding: FragmentSettingsBinding by autoCleared()
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding: FragmentSettingsBinding get() = requireNotNull(_binding)
 
-    private val mViewModel: SettingsViewModel by viewModels( { requireActivity() } )
+    private val mViewModel: SettingsViewModel by viewModels({ requireActivity() })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
 
         binding.apply {
             toolbar.setToolbar(
@@ -107,5 +107,10 @@ class SettingsFragment : Fragment() {
         CustomTabsIntent.Builder()
             .build()
             .launchUrl(requireContext(), Uri.parse(url))
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

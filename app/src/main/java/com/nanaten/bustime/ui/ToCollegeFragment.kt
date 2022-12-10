@@ -19,7 +19,6 @@ import com.nanaten.bustime.databinding.FragmentToCollegeBinding
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
-import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,8 +27,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class ToCollegeFragment : Fragment(), ItemClickListener {
 
-    private val mViewModel: DiagramViewModel by viewModels ({ requireParentFragment() })
-    private var binding: FragmentToCollegeBinding by autoCleared()
+    private val mViewModel: DiagramViewModel by viewModels({ requireParentFragment() })
+    private var _binding: FragmentToCollegeBinding? = null
+    private val binding: FragmentToCollegeBinding get() = requireNotNull(_binding)
 
     // タブのポジション設定
     // 本当は動的に取りたい
@@ -39,7 +39,7 @@ class ToCollegeFragment : Fragment(), ItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_college, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_college, container, false)
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)
@@ -107,5 +107,10 @@ class ToCollegeFragment : Fragment(), ItemClickListener {
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

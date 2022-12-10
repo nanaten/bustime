@@ -16,7 +16,6 @@ import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
-import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.util.setToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,8 +25,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ScaffoldFragment : Fragment() {
 
-    private var binding: FragmentScaffoldBinding by autoCleared()
-
+    private var _binding: FragmentScaffoldBinding? = null
+    private val binding: FragmentScaffoldBinding get() = requireNotNull(_binding)
     private val mViewModel: DiagramViewModel by viewModels()
 
     override fun onCreateView(
@@ -35,7 +34,7 @@ class ScaffoldFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
             toolbar.setToolbar(
                 backVisibility = View.GONE,
@@ -93,5 +92,10 @@ class ScaffoldFragment : Fragment() {
 
     private fun getDiagrams() {
         mViewModel.getDiagrams()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
