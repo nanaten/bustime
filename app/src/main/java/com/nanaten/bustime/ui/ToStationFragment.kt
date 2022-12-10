@@ -19,7 +19,6 @@ import com.nanaten.bustime.databinding.FragmentToStationBinding
 import com.nanaten.bustime.network.entity.Diagram
 import com.nanaten.bustime.network.entity.NetworkResult
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
-import com.nanaten.bustime.util.autoCleared
 import com.nanaten.bustime.widget.CustomLinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +29,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ToStationFragment : Fragment(), ItemClickListener {
 
     private val mViewModel: DiagramViewModel by viewModels({ requireParentFragment() })
-    private var binding: FragmentToStationBinding by autoCleared()
+    private var _binding: FragmentToStationBinding? = null
+    private val binding: FragmentToStationBinding get() = requireNotNull(_binding)
+
 
     // タブのポジション設定
     // 本当は動的に取りたい
@@ -40,7 +41,7 @@ class ToStationFragment : Fragment(), ItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_to_station, container, false)
 
         val mAdapter = DiagramAdapter(mViewModel, tabPosition)
         mAdapter.setOnItemClickListener(this)
@@ -107,5 +108,10 @@ class ToStationFragment : Fragment(), ItemClickListener {
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
