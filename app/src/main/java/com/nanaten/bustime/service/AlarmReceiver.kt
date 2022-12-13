@@ -13,6 +13,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.nanaten.bustime.BuildConfig
@@ -47,7 +48,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
                         // 2秒後にHeads-up Notificationを消す
                         Thread(Runnable {
-                            Handler().postDelayed({
+                            Handler(Looper.getMainLooper()).postDelayed({
                                 priority = NotificationManager.IMPORTANCE_DEFAULT
                             }, 2000)
                         })
