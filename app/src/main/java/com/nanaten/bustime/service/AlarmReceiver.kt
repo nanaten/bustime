@@ -31,7 +31,12 @@ class AlarmReceiver : BroadcastReceiver() {
                     val i = Intent(context, MainActivity::class.java)
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     val pendingIntent =
-                        PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_ONE_SHOT)
+                        PendingIntent.getActivity(
+                            context,
+                            0,
+                            i,
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
+                        )
                     setSmallIcon(R.drawable.ic_notification)
                     color = ContextCompat.getColor(context, R.color.colorPrimary)
                     setContentTitle("リマインダー")
