@@ -11,5 +11,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class RemotePdfEntity(
     var calendar: String = "",
-    @Json(name = "time_table") var timeTable: String = ""
+    @field:Json(name = "time_table") var timeTable: String = ""
 )

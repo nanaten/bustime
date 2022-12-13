@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# Serializable Objects
+-keepnames class * implements android.os.Parcelable
+-keepnames class * implements java.io.Serializable
+
+-keepnames enum *
+
+# Retrofit
+-keepclasseswithmembers interface * { @retrofit2.http.* <methods>; }
