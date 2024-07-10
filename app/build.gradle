@@ -7,13 +7,13 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.dagger.hilt.android'
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId "com.nanaten.bustime"
         minSdk = 23
-        targetSdk = 33
-        versionCode 11
-        versionName "1.0.6"
+        targetSdk = 34
+        versionCode 12
+        versionName "1.0.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,8 +30,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     namespace 'com.nanaten.bustime'
 }
