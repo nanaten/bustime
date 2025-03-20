@@ -6,6 +6,10 @@
 package com.nanaten.bustime.util
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.distinctUntilChanged
@@ -79,4 +83,22 @@ inline fun <T : Any, LIVE1 : Any, LIVE2 : Any, LIVE3 : Any> combine(
             }
         }
     }.distinctUntilChanged()
+}
+
+fun View.setStatusBarWindowInsets() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, windowInsets ->
+        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        // Apply the insets as a margin to the view. This solution sets
+        // only the bottom, left, and right dimensions, but you can apply whichever
+        // insets are appropriate to your layout. You can also update the view padding
+        // if that's more appropriate.
+        v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            topMargin = insets.top
+            bottomMargin = insets.bottom
+        }
+
+        // Return CONSUMED if you don't want want the window insets to keep passing
+        // down to descendant views.
+        WindowInsetsCompat.CONSUMED
+    }
 }

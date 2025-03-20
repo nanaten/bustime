@@ -22,6 +22,7 @@ import com.nanaten.bustime.Const
 import com.nanaten.bustime.R
 import com.nanaten.bustime.databinding.FragmentSettingsBinding
 import com.nanaten.bustime.ui.viewmodel.SettingsViewModel
+import com.nanaten.bustime.util.setStatusBarWindowInsets
 import com.nanaten.bustime.util.setToolbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,6 +41,7 @@ class SettingsFragment : Fragment() {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
 
         binding.apply {
+            this.root.setStatusBarWindowInsets()
             toolbar.setToolbar(
                 settingVisibility = View.GONE,
                 backVisibility = View.VISIBLE,
