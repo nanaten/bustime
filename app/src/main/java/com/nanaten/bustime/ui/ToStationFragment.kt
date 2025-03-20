@@ -90,6 +90,7 @@ class ToStationFragment : Fragment(), ItemClickListener {
                         .launchUrl(view.context, Uri.parse(it))
                 } ?: showToast(getString(R.string.network_error_message))
             }
+
             "TimeTable" -> {
                 val url = mViewModel.pdfUrl.value?.timeTable
                 url?.let {
@@ -98,10 +99,12 @@ class ToStationFragment : Fragment(), ItemClickListener {
                         .launchUrl(view.context, Uri.parse(it))
                 } ?: showToast(getString(R.string.network_error_message))
             }
+
             is Diagram -> {
                 val diagram = view.tag as Diagram
                 mViewModel.showRemindDialog(requireContext(), diagram)
             }
+
             else -> return
         }
     }

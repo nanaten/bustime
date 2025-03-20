@@ -16,6 +16,7 @@ import com.nanaten.bustime.adapter.HomeTabs
 import com.nanaten.bustime.adapter.ScaffoldPagerAdapter
 import com.nanaten.bustime.databinding.FragmentScaffoldBinding
 import com.nanaten.bustime.ui.viewmodel.DiagramViewModel
+import com.nanaten.bustime.util.setStatusBarWindowInsets
 import com.nanaten.bustime.util.setToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +37,7 @@ class ScaffoldFragment : Fragment() {
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scaffold, container, false)
         binding.apply {
+            this.root.setStatusBarWindowInsets()
             toolbar.setToolbar(
                 backVisibility = View.GONE,
                 settingVisibility = View.VISIBLE,
